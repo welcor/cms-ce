@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -32,7 +31,6 @@ import com.enonic.cms.core.structure.RunAsType;
 import com.enonic.cms.core.structure.SiteEntity;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
 import com.enonic.cms.core.structure.menuitem.MenuItemKey;
-import com.enonic.cms.core.structure.menuitem.section.SectionContentTypeFilterEntity;
 import com.enonic.cms.core.structure.page.PageEntity;
 import com.enonic.cms.core.structure.page.template.CreatePageTemplateCommand;
 import com.enonic.cms.core.structure.page.template.PageTemplateEntity;
@@ -118,8 +116,8 @@ public class PageTemplateServiceImpl_updatePageTemplateTest
         ctyconf.endBlock();
         Document configAsXmlBytes = XMLDocumentFactory.create( ctyconf.toString() ).getAsJDOMDocument();
 
-        ContentTypeEntity contenType = factory.createContentType( "article", ContentHandlerName.CUSTOM.getHandlerClassShortName(),
-                                                                  configAsXmlBytes );
+        ContentTypeEntity contenType =
+            factory.createContentType( "article", ContentHandlerName.CUSTOM.getHandlerClassShortName(), configAsXmlBytes );
         contenType.setKey( 1001 );
         fixture.save( contenType );
 
@@ -225,7 +223,6 @@ public class PageTemplateServiceImpl_updatePageTemplateTest
         assertEquals( "Article-Show", templatePortlet.getPortlet().getName() );
         assertEquals( centerRegion, templatePortlet.getPageTemplateRegion() );
 
-
         assertEquals( false, centerRegion.isMultiple() );
         assertEquals( false, centerRegion.isOverride() );
         assertEquals( "<br />", centerRegion.getSeparator() );
@@ -288,29 +285,35 @@ public class PageTemplateServiceImpl_updatePageTemplateTest
 
         SiteEntity site = fixture.findSiteByName( "The Newspaper" );
 
-        final String updXmdData = "<pagetemplate key=\"" + pageTemplateKey + "\" menukey=\"" + site.getKey().toInt() + "\" runAs=\"INHERIT\" type=\"content\">\n" +
+        final String updXmdData = "<pagetemplate key=\"" + pageTemplateKey + "\" menukey=\"" + site.getKey().toInt() +
+            "\" runAs=\"INHERIT\" type=\"content\">\n" +
             "  <css stylesheetkey=\"/sites/advanced/dav/_public/sites/advanced/all.css\"/>\n" +
             "  <name>Yuppi</name>\n" +
             "  <description>qwerty</description>\n" +
             "  <stylesheet stylesheetkey=\"/sites/advanced/dav/sites/advanced/page.xsl\"/>\n" +
             "  <pagetemplateparameters>\n" +
-            "    <pagetemplateparameter key=\"" + getRegionKeyByName( regions, "center" ) + "\" multiple=\"0\" override=\"0\" pagetemplatekey=\"" + pageTemplateKey + "\">\n" +
+            "    <pagetemplateparameter key=\"" + getRegionKeyByName( regions, "center" ) +
+            "\" multiple=\"0\" override=\"0\" pagetemplatekey=\"" + pageTemplateKey + "\">\n" +
             "      <name>center</name>\n" +
             "      <separator>&lt;br /&gt;</separator>\n" +
             "    </pagetemplateparameter>\n" +
-            "    <pagetemplateparameter key=\"" + getRegionKeyByName( regions, "east" ) + "\" multiple=\"0\" override=\"0\" pagetemplatekey=\"" + pageTemplateKey + "\">\n" +
+            "    <pagetemplateparameter key=\"" + getRegionKeyByName( regions, "east" ) +
+            "\" multiple=\"0\" override=\"0\" pagetemplatekey=\"" + pageTemplateKey + "\">\n" +
             "      <name>east</name>\n" +
             "      <separator>&lt;br /&gt;</separator>\n" +
             "    </pagetemplateparameter>\n" +
-            "    <pagetemplateparameter key=\"" + northKey + "\" multiple=\"0\" override=\"0\" pagetemplatekey=\"" + pageTemplateKey + "\">\n" +
+            "    <pagetemplateparameter key=\"" + northKey + "\" multiple=\"0\" override=\"0\" pagetemplatekey=\"" + pageTemplateKey +
+            "\">\n" +
             "      <name>north</name>\n" +
             "      <separator>&lt;br /&gt;</separator>\n" +
             "    </pagetemplateparameter>\n" +
-            "    <pagetemplateparameter key=\"" + getRegionKeyByName( regions, "south" ) + "\" multiple=\"0\" override=\"0\" pagetemplatekey=\"" + pageTemplateKey + "\">\n" +
+            "    <pagetemplateparameter key=\"" + getRegionKeyByName( regions, "south" ) +
+            "\" multiple=\"0\" override=\"0\" pagetemplatekey=\"" + pageTemplateKey + "\">\n" +
             "      <name>south</name>\n" +
             "      <separator>&lt;br /&gt;</separator>\n" +
             "    </pagetemplateparameter>\n" +
-            "    <pagetemplateparameter key=\"" + getRegionKeyByName( regions, "west" ) + "\" multiple=\"0\" override=\"0\" pagetemplatekey=\"" + pageTemplateKey + "\">\n" +
+            "    <pagetemplateparameter key=\"" + getRegionKeyByName( regions, "west" ) +
+            "\" multiple=\"0\" override=\"0\" pagetemplatekey=\"" + pageTemplateKey + "\">\n" +
             "      <name>west</name>\n" +
             "      <separator>&lt;br /&gt;</separator>\n" +
             "    </pagetemplateparameter>\n" +
@@ -369,7 +372,8 @@ public class PageTemplateServiceImpl_updatePageTemplateTest
             {
                 northRegion = region;
                 break;
-            } else
+            }
+            else
             {
                 assertEquals( 0, region.getPortlets().size() );
             }
@@ -388,7 +392,6 @@ public class PageTemplateServiceImpl_updatePageTemplateTest
         assertEquals( "Article-Show", templatePortlet.getPortlet().getName() );
         assertEquals( northRegion, templatePortlet.getPageTemplateRegion() );
         assertEquals( templatePortlet, northRegion.getPortlets().iterator().next() );
-
 
         MenuItemEntity menuItem4040 = menuItemDao.findByKey( new MenuItemKey( 4040 ) );
         Set<ContentTypeEntity> ctys = menuItem4040.getAllowedSectionContentTypes();
@@ -428,24 +431,28 @@ public class PageTemplateServiceImpl_updatePageTemplateTest
         return -1;
     }
 
-    private static void assertUnorderedArrayArrayEquals(Object[] a1, Object[] a2) {
+    private static void assertUnorderedArrayArrayEquals( Object[] a1, Object[] a2 )
+    {
         Object[] b1 = a1.clone();
         Object[] b2 = a2.clone();
 
-        Arrays.sort(b1);
-        Arrays.sort(b2);
+        Arrays.sort( b1 );
+        Arrays.sort( b2 );
 
         assertArrayEquals( b1, b2 );
     }
 
-    private static void assertArrayEquals( final Object[] a1, final Object[] a2 ) {
+    private static void assertArrayEquals( final Object[] a1, final Object[] a2 )
+    {
         Assert.assertEquals( arrayToString( a1 ), arrayToString( a2 ) );
     }
 
-    private static String arrayToString( final Object[] a ) {
+    private static String arrayToString( final Object[] a )
+    {
         StringBuilder result = new StringBuilder( "[" );
 
-        for ( int i = 0; i < a.length; i++ ) {
+        for ( int i = 0; i < a.length; i++ )
+        {
             result.append( i ).append( ": " ).append( a[i] );
             if ( i < a.length - 1 )
             {

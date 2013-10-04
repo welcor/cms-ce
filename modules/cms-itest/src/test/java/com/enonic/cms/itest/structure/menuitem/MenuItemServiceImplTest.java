@@ -54,7 +54,6 @@ import com.enonic.cms.core.structure.menuitem.RemoveContentsFromSectionCommand;
 import com.enonic.cms.core.structure.menuitem.SetContentHomeCommand;
 import com.enonic.cms.core.structure.menuitem.UnapproveContentsInSectionCommand;
 import com.enonic.cms.core.structure.menuitem.section.SectionContentEntity;
-import com.enonic.cms.core.structure.menuitem.section.SectionContentTypeFilterEntity;
 import com.enonic.cms.core.structure.page.template.PageTemplateEntity;
 import com.enonic.cms.core.structure.page.template.PageTemplateType;
 import com.enonic.cms.itest.AbstractSpringTest;

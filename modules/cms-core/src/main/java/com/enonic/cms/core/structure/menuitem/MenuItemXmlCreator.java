@@ -22,7 +22,6 @@ import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.content.contenttype.ContentTypeEntity;
 import com.enonic.cms.core.language.LanguageEntity;
 import com.enonic.cms.core.language.LanguageKey;
-import com.enonic.cms.core.structure.menuitem.section.SectionContentTypeFilterEntity;
 import com.enonic.cms.core.structure.page.PageEntity;
 import com.enonic.cms.core.structure.page.template.PageTemplateEntity;
 

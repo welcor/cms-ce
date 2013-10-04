@@ -33,7 +33,6 @@ import com.enonic.cms.core.service.KeyService;
 import com.enonic.cms.core.structure.RunAsType;
 import com.enonic.cms.core.structure.SiteEntity;
 import com.enonic.cms.core.structure.menuitem.MenuItemEntity;
-import com.enonic.cms.core.structure.menuitem.section.SectionContentTypeFilterEntity;
 import com.enonic.cms.core.structure.page.PageEntity;
 import com.enonic.cms.core.structure.portlet.PortletEntity;
 import com.enonic.cms.store.dao.ContentTypeDao;
@@ -270,8 +269,7 @@ public class PageTemplateServiceImpl
         return contentTypes;
     }
 
-    private void createContentTypesForMenuItems( final PageTemplateEntity pageTemplate,
-                                                 final List<ContentTypeEntity> contentTypes,
+    private void createContentTypesForMenuItems( final PageTemplateEntity pageTemplate, final List<ContentTypeEntity> contentTypes,
                                                  final boolean switchToSection )
     {
         final Collection<MenuItemEntity> menuItems = menuItemDao.findByPageTemplate( pageTemplate.getKey() );
@@ -393,8 +391,7 @@ public class PageTemplateServiceImpl
         }
     }
 
-    private void populatePageTemplateRegion( final PageTemplateRegionEntity region,
-                                             final Element elem,
+    private void populatePageTemplateRegion( final PageTemplateRegionEntity region, final Element elem,
                                              final Map<String, Element> subelems )
     {
         // element: name
@@ -537,7 +534,7 @@ public class PageTemplateServiceImpl
             regionDao.storeNew( region );
             newPageTemplate.addPageTemplateRegion( region );
         }
-        for ( PageTemplatePortletEntity portlet : portlets)
+        for ( PageTemplatePortletEntity portlet : portlets )
         {
             portlet.setKey( new PageTemplatePortletKey( newPageTemplate.getKey(), portlet.getPortlet().getKey() ) );
             newPageTemplate.addPageTemplatePortlet( portlet );

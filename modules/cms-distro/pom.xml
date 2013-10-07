@@ -11,7 +11,7 @@
   </parent>
 
   <groupId>com.enonic.cms.distro</groupId>
-  <artifactId>cms-distro</artifactId>
+  <artifactId>cms-ce-distro</artifactId>
   <packaging>pom</packaging>
   <name>Enonic CMS Distro</name>
 

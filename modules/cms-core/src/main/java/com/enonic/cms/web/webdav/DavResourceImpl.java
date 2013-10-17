@@ -204,7 +204,7 @@ final class DavResourceImpl
     public MultiStatusResponse alterProperties( final List<? extends PropEntry> entries )
         throws DavException
     {
-        return null;
+        return new MultiStatusResponse( "/", 1 );
     }
 
     @Override

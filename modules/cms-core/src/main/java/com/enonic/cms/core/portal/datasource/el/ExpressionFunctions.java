@@ -93,9 +93,10 @@ public class ExpressionFunctions
 
     public String concat( String... str )
     {
-        StringBuilder sb = new StringBuilder(  );
+        StringBuilder sb = new StringBuilder();
 
-        for(String s : str) {
+        for ( String s : str )
+        {
             sb.append( s );
         }
 

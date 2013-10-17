@@ -122,9 +122,9 @@ public class ExpressionFunctionsExecutorTest
         throws Exception
     {
         final VerticalSession verticalSession = new VerticalSession();
-        verticalSession.setAttribute( "param1", "value1");
-        verticalSession.setAttribute( "param2", "value2");
-        verticalSession.setAttribute( "param3", "value3");
+        verticalSession.setAttribute( "param1", "value1" );
+        verticalSession.setAttribute( "param2", "value2" );
+        verticalSession.setAttribute( "param3", "value3" );
         efExecutor.setVerticalSession( verticalSession );
 
         assertEquals( "value1", efExecutor.evaluate( "${session.param1}" ) );
@@ -362,11 +362,24 @@ public class ExpressionFunctionsExecutorTest
         assertEquals( null, evaluated );
     }
 
+//    @Test
+//    public void testUrlEncode()
+//        throws Exception
+//    {
+//        MockHttpServletRequest request = new MockHttpServletRequest();
+//        request.addParameter( "other", "&greeting=Hei ÆØÅ!" );
+//        efExecutor.setHttpRequest( request );
+//        String evaluated = efExecutor.evaluate( "${concat('https://test.test.no/api/', '/bestillKurs?api-key=testuser&amp;api-secret=testuser', urlEncode(param.other))}" );
+//        assertEquals( "https://test.test.no/api//bestillKurs?api-key=testuser&amp;api-secret=testuser&greeting=Hei%20%C3%86%C3%98%C3%85!", evaluated );
+//    }
+
+
     @Test
-    public void testUrlEncode()
+    public void testUrlEncodeEmpty()
         throws Exception
     {
-        String evaluated = efExecutor.evaluate( "${concat('https://test.test.no/api/', '/bestillKurs?api-key=testuser&amp;api-secret=testuser', urlEncode(param.other))}" );
+        String evaluated = efExecutor.evaluate(
+            "${concat('https://test.test.no/api/', '/bestillKurs?api-key=testuser&amp;api-secret=testuser', urlEncode(param.other))}" );
         assertEquals( "https://test.test.no/api//bestillKurs?api-key=testuser&amp;api-secret=testuser", evaluated );
     }
 

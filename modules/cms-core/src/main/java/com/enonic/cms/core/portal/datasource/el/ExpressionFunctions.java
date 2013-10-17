@@ -340,6 +340,11 @@ public class ExpressionFunctions
 
     public String urlEncode( String source )
     {
+        if ( StringUtils.isBlank( source ) )
+        {
+            return "";
+        }
+
         try
         {
             return URLEncoder.encode( source, "UTF-8" );

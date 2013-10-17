@@ -363,6 +363,14 @@ public class ExpressionFunctionsExecutorTest
     }
 
     @Test
+    public void testUrlEncode()
+        throws Exception
+    {
+        String evaluated = efExecutor.evaluate( "${concat('https://test.test.no/api/', '/bestillKurs?api-key=testuser&amp;api-secret=testuser', urlEncode(param.other))}" );
+        assertEquals( "https://test.test.no/api//bestillKurs?api-key=testuser&amp;api-secret=testuser", evaluated );
+    }
+
+    @Test
     public void testPropertyFromSite()
         throws Exception
     {

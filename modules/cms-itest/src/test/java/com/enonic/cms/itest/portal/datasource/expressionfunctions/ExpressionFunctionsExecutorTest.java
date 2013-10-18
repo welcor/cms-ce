@@ -362,16 +362,19 @@ public class ExpressionFunctionsExecutorTest
         assertEquals( null, evaluated );
     }
 
-//    @Test
-//    public void testUrlEncode()
-//        throws Exception
-//    {
-//        MockHttpServletRequest request = new MockHttpServletRequest();
-//        request.addParameter( "other", "&greeting=Hei ÆØÅ!" );
-//        efExecutor.setHttpRequest( request );
-//        String evaluated = efExecutor.evaluate( "${concat('https://test.test.no/api/', '/bestillKurs?api-key=testuser&amp;api-secret=testuser', urlEncode(param.other))}" );
-//        assertEquals( "https://test.test.no/api//bestillKurs?api-key=testuser&amp;api-secret=testuser&greeting=Hei%20%C3%86%C3%98%C3%85!", evaluated );
-//    }
+    @Test
+    public void testUrlEncode()
+        throws Exception
+    {
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.addParameter( "other", "&greeting=Hei ÆØÅ!" );
+        efExecutor.setHttpRequest( request );
+        RequestParameters requestParameters = new RequestParameters();
+        requestParameters.addParameterValue( "other", "&greeting=Hei ÆØÅ!" );
+        efExecutor.setRequestParameters( requestParameters );
+        String evaluated = efExecutor.evaluate( "${concat('https://test.test.no/api/', '/bestillKurs?api-key=testuser&amp;api-secret=testuser', urlEncode(param.other))}" );
+        assertEquals( "https://test.test.no/api//bestillKurs?api-key=testuser&amp;api-secret=testuser%26greeting%3DHei+%C3%86%C3%98%C3%85%21", evaluated );
+    }
 
 
     @Test

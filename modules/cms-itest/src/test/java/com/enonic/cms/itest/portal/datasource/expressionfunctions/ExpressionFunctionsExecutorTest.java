@@ -366,9 +366,6 @@ public class ExpressionFunctionsExecutorTest
     public void testUrlEncode()
         throws Exception
     {
-        MockHttpServletRequest request = new MockHttpServletRequest();
-        request.addParameter( "other", "&greeting=Hei ÆØÅ!" );
-        efExecutor.setHttpRequest( request );
         RequestParameters requestParameters = new RequestParameters();
         requestParameters.addParameterValue( "other", "&greeting=Hei ÆØÅ!" );
         efExecutor.setRequestParameters( requestParameters );

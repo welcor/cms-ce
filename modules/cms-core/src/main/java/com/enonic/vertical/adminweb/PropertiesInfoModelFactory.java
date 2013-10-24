@@ -9,11 +9,13 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Maps;
 
 import com.enonic.cms.core.tools.DataSourceInfoResolver;
+import com.enonic.cms.core.vhost.VirtualHostResolver;
 
 public class PropertiesInfoModelFactory
 {
@@ -21,10 +23,15 @@ public class PropertiesInfoModelFactory
 
     private Properties configurationProperties;
 
-    public PropertiesInfoModelFactory( DataSourceInfoResolver dataSourceInfoResolver, Properties configurationProperties )
+    private Properties virtualHosts;
+
+
+    public PropertiesInfoModelFactory( DataSourceInfoResolver dataSourceInfoResolver, Properties configurationProperties,
+                                       final Properties virtualHosts )
     {
         this.dataSourceInfoResolver = dataSourceInfoResolver;
         this.configurationProperties = configurationProperties;
+        this.virtualHosts = virtualHosts;
     }
 
     public PropertiesInfoModel createSystemPropertiesModel()
@@ -37,6 +44,7 @@ public class PropertiesInfoModelFactory
             infoModel.setSystemProperties( System.getProperties() );
             infoModel.setDatasourceProperties( this.dataSourceInfoResolver.getInfo( false ) );
             infoModel.setConfigurationProperties( getConfigurationProperties() );
+            infoModel.setVhostProperties( virtualHosts );
         }
         catch ( Exception e )
         {

@@ -630,6 +630,7 @@
 %notifyMailSubject%|Bruker opprettet|User created|Bruger oprettet|Skapad av användare
 %fldRestricted%|Begrenset innmelding|Restricted enrollment|Begrænset indmeldelse|Begränsad registrering
 %cmdNewVirtualHost%|Ny virtual host|New virtual host|Ny virtual host|Ny virtuell host
+%virtualHostConfiguration%|Virtual host configuration|Virtual host configuration|Virtual host configuration|Virtual host configuration
 %blockSender%|Avsender|Sender|Afsender|Avsändare
 %fldSummary%|Sammendrag|Summary|Sammendrag|Sammandrag
 %cmdClose%|Lukk|Close|Luk|Stäng

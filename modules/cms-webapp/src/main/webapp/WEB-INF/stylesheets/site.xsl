@@ -295,6 +295,40 @@
 
               </div>
 
+              <div class="tab-pane" id="tab-pane-2">
+                <div class="tab-page" id="tab-page-2">
+                  <span class="tab">%mnuProperties%</span>
+
+                  <script type="text/javascript" language="JavaScript">
+                    tabPane1.addTabPage( document.getElementById( "tab-page-2" ) );
+                  </script>
+
+                  <fieldset>
+                    <legend>&nbsp;%mnuProperties%&nbsp;</legend>
+                    <table class="formtable">
+                      <tr>
+                        <td nowrap="true">
+                          <b>%name%</b>
+                        </td>
+                        <td width="100%">
+                          <b>%value%</b>
+                        </td>
+                      </tr>
+                      <xsl:for-each select="/menus/menu/advanced/properties/property">
+                        <xsl:sort select="@name"/>
+                        <tr>
+                          <td nowrap="true"><xsl:value-of select="@name"/>&nbsp;&nbsp;
+                          </td>
+                          <td>
+                            <xsl:value-of select="@value"/>
+                          </td>
+                        </tr>
+                      </xsl:for-each>
+                    </table>
+                  </fieldset>
+                </div>
+              </div>
+
               <script type="text/javascript" language="JavaScript">
                 setupAllTabs();
               </script>

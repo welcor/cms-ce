@@ -411,6 +411,37 @@
       </fieldset>
     </div>
 
+    <div class="tab-page" id="tab-page-5">
+      <span class="tab">%virtualHostConfiguration%</span>
+
+      <script type="text/javascript" language="JavaScript">
+        tabPane1.addTabPage( document.getElementById( "tab-page-5" ) );
+      </script>
+
+      <fieldset>
+        <legend>&nbsp;%virtualHostConfiguration%&nbsp;</legend>
+        <table class="formtable">
+          <tr>
+            <td nowrap="true">
+              <b>%name%</b>
+            </td>
+            <td width="100%">
+              <b>%value%</b>
+            </td>
+          </tr>
+          <xsl:for-each select="/vertical/model/vhostProperties/vhostProperty">
+            <tr>
+              <td nowrap="true"><xsl:value-of select="@name"/>&nbsp;&nbsp;
+              </td>
+              <td>
+                <xsl:value-of select="@value"/>
+              </td>
+            </tr>
+          </xsl:for-each>
+        </table>
+      </fieldset>
+    </div>
+
   </xsl:template>
 
 </xsl:stylesheet>

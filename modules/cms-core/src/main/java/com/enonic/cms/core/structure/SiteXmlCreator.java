@@ -11,6 +11,8 @@ import java.util.Set;
 import org.jdom.Document;
 import org.jdom.Element;
 
+import com.enonic.vertical.adminweb.PropertiesXmlCreator;
+
 import com.enonic.cms.framework.xml.XMLBuilder;
 import com.enonic.cms.framework.xml.XMLDocument;
 import com.enonic.cms.framework.xml.XMLDocumentFactory;
@@ -63,6 +65,8 @@ public class SiteXmlCreator
     private boolean userXmlAsAdminConsoleStyle = true;
 
     private final MenuItemEntity menuItemInPreview;
+
+    private boolean includeProperties;
 
     public SiteXmlCreator( MenuItemAccessResolver menuItemAccessResolver, MenuItemEntity menuItemInPreview )
     {
@@ -460,6 +464,15 @@ public class SiteXmlCreator
             createMenuItemsElement( xmlDoc, site.getTopMenuItems(), true );
         }
 
+        // include site-x.properties
+        if ( includeProperties && siteProperties != null)
+        {
+            final PropertiesXmlCreator xmlCreator = new PropertiesXmlCreator();
+            xmlDoc.startElement( "advanced" );
+            xmlDoc.getCurrentElement().addContent( xmlCreator.createElement( "properties", "property", siteProperties.getProperties() ) );
+            xmlDoc.endElement();
+        }
+
         xmlDoc.endElement();
     }
 
@@ -612,6 +625,16 @@ public class SiteXmlCreator
     public void setUserXmlAsAdminConsoleStyle( boolean userXmlAsAdminConsoleStyle )
     {
         this.userXmlAsAdminConsoleStyle = userXmlAsAdminConsoleStyle;
+    }
+
+    public void setIncludeProperties( final boolean includeProperties )
+    {
+        this.includeProperties = includeProperties;
+    }
+
+    public boolean isIncludeProperties()
+    {
+        return includeProperties;
     }
 }
 

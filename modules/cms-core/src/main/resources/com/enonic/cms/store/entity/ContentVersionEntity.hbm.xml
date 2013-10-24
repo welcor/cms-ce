@@ -17,7 +17,7 @@
       <column name="COV_DTETIMESTAMP" not-null="true"/>
     </property>
     <property name="title" type="string">
-      <column name="COV_STITLE" length="256" not-null="true"/>
+      <column name="COV_STITLE" length="255" not-null="true"/>
     </property>
     <property name="contentDataXml" type="com.enonic.cms.store.hibernate.type.LazyInitializedJDOMDocumentUserType">
       <column name="COV_XMLCONTENTDATA" not-null="true" length="1000000"/>

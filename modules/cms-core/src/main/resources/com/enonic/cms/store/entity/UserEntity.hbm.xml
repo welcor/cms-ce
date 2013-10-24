@@ -14,7 +14,7 @@
       <column name="USR_SFULLNAME" length="256" not-null="true"/>
     </property>
     <property name="email" type="string">
-      <column name="USR_SEMAIL" length="256" not-null="false"/>
+      <column name="USR_SEMAIL" length="255" not-null="false"/>
     </property>
     <property name="syncValue" type="string">
       <column name="USR_SSYNCVALUE2" length="255" not-null="true"/>
@@ -23,7 +23,7 @@
       <column name="USR_DTETIMESTAMP" not-null="true"/>
     </property>
     <property name="name" type="string">
-      <column name="USR_SUID" length="256" not-null="true"/>
+      <column name="USR_SUID" length="255" not-null="true"/>
     </property>
     <property name="type" type="com.enonic.cms.store.hibernate.type.UserTypeUserType">
       <column name="USR_UT_LKEY" not-null="true"/>

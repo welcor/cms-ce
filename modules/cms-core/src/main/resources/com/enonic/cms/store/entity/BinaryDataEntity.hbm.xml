@@ -11,7 +11,7 @@
       </generator>
     </id>
     <property name="name" type="string">
-      <column name="BDA_SFILENAME" length="256" not-null="true"/>
+      <column name="BDA_SFILENAME" length="255" not-null="true"/>
     </property>
     <property name="size" type="int">
       <column name="BDA_LFILESIZE" not-null="true"/>

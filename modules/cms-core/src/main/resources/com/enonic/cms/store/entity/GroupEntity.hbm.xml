@@ -14,7 +14,7 @@
       <column name="GRP_SDESCRIPTION" length="1024"/>
     </property>
     <property name="name" type="string">
-      <column name="GRP_SNAME" length="256" not-null="true"/>
+      <column name="GRP_SNAME" length="255" not-null="true"/>
     </property>
     <property name="restricted" type="int">
       <column name="GRP_BRESTRICTED" not-null="true"/>

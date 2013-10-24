@@ -12,7 +12,7 @@
       <column name="COB_DTETIMESTAMP" not-null="true"/>
     </property>
     <property name="name" type="string">
-      <column name="COB_SNAME" length="256" not-null="true"/>
+      <column name="COB_SNAME" length="255" not-null="true"/>
     </property>
     <property name="xmlData" type="com.enonic.cms.store.hibernate.type.LazyInitializedJDOMDocumentUserType">
       <column name="COB_XMLDATA"/>

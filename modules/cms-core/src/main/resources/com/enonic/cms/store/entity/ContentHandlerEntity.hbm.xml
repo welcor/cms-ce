@@ -9,7 +9,7 @@
       <generator class="assigned"/>
     </id>
     <property name="className" type="string">
-      <column name="HAN_SCLASS" length="256" not-null="true"/>
+      <column name="HAN_SCLASS" length="255" not-null="true"/>
     </property>
     <property name="description" type="string">
       <column name="HAN_SDESCRIPTION" length="256"/>

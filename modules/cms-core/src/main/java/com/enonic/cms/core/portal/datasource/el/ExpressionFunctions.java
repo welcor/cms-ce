@@ -91,11 +91,11 @@ public class ExpressionFunctions
         }
     }
 
-    public String concat( String... str )
+    public String concat( Object... str )
     {
         StringBuilder sb = new StringBuilder();
 
-        for ( String s : str )
+        for ( Object s : str )
         {
             sb.append( s );
         }

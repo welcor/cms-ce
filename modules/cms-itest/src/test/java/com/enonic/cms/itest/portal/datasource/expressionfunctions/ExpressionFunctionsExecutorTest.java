@@ -391,6 +391,38 @@ public class ExpressionFunctionsExecutorTest
         assertEquals( "site", evaluated );
     }
 
+    @Test()
+    public void testBadFunc()
+        throws Exception
+    {
+        String evaluated = efExecutor.evaluate( "${concat(}" );
+        assertEquals( "ERROR: Found closing '}' at position 9 but most recent opening is '(' at position 8", evaluated );
+    }
+
+    @Test
+    public void testPropertiesFromSite()
+        throws Exception
+    {
+        String evaluated = efExecutor.evaluate( "${concat(properties['cms.site.test'], properties['cms.site.test'])}" );
+        assertEquals( "sitesite", evaluated );
+    }
+
+    @Test
+    public void testPropertiesFromSite2()
+        throws Exception
+    {
+        String evaluated = efExecutor.evaluate( "${concat(properties.cms.site.test, properties.cms.site.test)}" );
+        assertEquals( "sitesite", evaluated );
+    }
+
+    @Test
+    public void testPropertiesFromSiteInFunc()
+        throws Exception
+    {
+        String evaluated = efExecutor.evaluate( "${upper(properties.cms.site.test)}" );
+        assertEquals( "SITE", evaluated );
+    }
+
     @Test
     public void testPropertyFromRoot()
         throws Exception

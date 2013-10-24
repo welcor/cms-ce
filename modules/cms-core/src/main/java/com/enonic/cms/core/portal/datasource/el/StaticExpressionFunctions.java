@@ -10,64 +10,65 @@ package com.enonic.cms.core.portal.datasource.el;
 public class StaticExpressionFunctions
 {
 
-    public static String isnotblank( String str )
+    public static String isnotblank( Object str )
     {
-        return Boolean.toString( ExpressionFunctionsFactory.get().createExpressionFunctions().isnotblank( str ) );
+        return Boolean.toString( ExpressionFunctionsFactory.get().createExpressionFunctions().isnotblank( toString( str ) ) );
     }
 
-    public static String isblank( String str )
+    public static String isblank( Object str )
     {
-        return Boolean.toString( ExpressionFunctionsFactory.get().createExpressionFunctions().isblank( str ) );
+        return Boolean.toString( ExpressionFunctionsFactory.get().createExpressionFunctions().isblank( toString( str ) ) );
     }
 
-    public static String isnotempty( String str )
+    public static String isnotempty( Object str )
     {
-        return Boolean.toString( ExpressionFunctionsFactory.get().createExpressionFunctions().isnotempty( str ) );
+        return Boolean.toString( ExpressionFunctionsFactory.get().createExpressionFunctions().isnotempty( toString( str ) ) );
     }
 
-    public static String isempty( String str )
+    public static String isempty( Object str )
     {
-        return Boolean.toString( ExpressionFunctionsFactory.get().createExpressionFunctions().isempty( str ) );
+        return Boolean.toString( ExpressionFunctionsFactory.get().createExpressionFunctions().isempty( toString( str ) ) );
     }
 
-    public static String select( String s1, String s2 )
+    public static String select( Object s1, Object s2 )
     {
-        return ExpressionFunctionsFactory.get().createExpressionFunctions().select( s1, s2 );
+        return ExpressionFunctionsFactory.get().createExpressionFunctions().select( toString( s1 ), toString( s2 ) );
     }
 
-    public static String concat( String... str )
+    public static String concat( Object... str )
     {
         return ExpressionFunctionsFactory.get().createExpressionFunctions().concat( str );
     }
 
-    public static String replace( String source, String regex, String replacement )
+    public static String replace( Object source, Object regex, Object replacement )
     {
-        return ExpressionFunctionsFactory.get().createExpressionFunctions().replace( source, regex, replacement );
+        return ExpressionFunctionsFactory.get().createExpressionFunctions().replace( toString( source ), toString( regex ),
+                                                                                     toString( replacement ) );
     }
 
-    public static String substring( String source, int beginIndex, int endIndex )
+    public static String substring( Object source, int beginIndex, int endIndex )
     {
-        return ExpressionFunctionsFactory.get().createExpressionFunctions().substring( source, beginIndex, endIndex );
+        return ExpressionFunctionsFactory.get().createExpressionFunctions().substring( toString( source ), beginIndex, endIndex );
     }
 
-    public static int stringlength( String source )
+    public static int stringlength( Object source )
     {
-        return ExpressionFunctionsFactory.get().createExpressionFunctions().stringlength( source );
+        return ExpressionFunctionsFactory.get().createExpressionFunctions().stringlength( toString( source ) );
     }
 
-    public static String lower( String source )
+    public static String lower( Object source )
     {
-        return ExpressionFunctionsFactory.get().createExpressionFunctions().lower( source );
+        return ExpressionFunctionsFactory.get().createExpressionFunctions().lower( toString( source ) );
     }
 
-    public static String upper( String source )
+    public static String upper( Object source )
     {
-        return ExpressionFunctionsFactory.get().createExpressionFunctions().upper( source );
+        return ExpressionFunctionsFactory.get().createExpressionFunctions().upper( toString( source ) );
     }
 
-    public static String trim( String source )
+    public static String trim( Object source )
     {
-        return ExpressionFunctionsFactory.get().createExpressionFunctions().trim( source );
+        return ExpressionFunctionsFactory.get().createExpressionFunctions().trim( toString( source ) );
     }
 
     public static int min( int v1, int v2 )
@@ -80,19 +81,20 @@ public class StaticExpressionFunctions
         return ExpressionFunctionsFactory.get().createExpressionFunctions().max( v1, v2 );
     }
 
-    public static String currentDate( String format )
+    public static String currentDate( Object format )
     {
-        return ExpressionFunctionsFactory.get().createExpressionFunctions().currentDate( format );
+        return ExpressionFunctionsFactory.get().createExpressionFunctions().currentDate( toString( format ) );
     }
 
-    public static String currentDatePlusOffset( String format, String period )
+    public static String currentDatePlusOffset( Object format, Object period )
     {
-        return ExpressionFunctionsFactory.get().createExpressionFunctions().currentDatePlusOffset( format, period );
+        return ExpressionFunctionsFactory.get().createExpressionFunctions().currentDatePlusOffset( toString( format ), toString( period ) );
     }
 
-    public static String currentDateMinusOffset( String format, String period )
+    public static String currentDateMinusOffset( Object format, Object period )
     {
-        return ExpressionFunctionsFactory.get().createExpressionFunctions().currentDateMinusOffset( format, period );
+        return ExpressionFunctionsFactory.get().createExpressionFunctions().currentDateMinusOffset( toString( format ),
+                                                                                                    toString( period ) );
     }
 
     public static String periodHoursMinutes( int hours, int minutes )
@@ -100,9 +102,9 @@ public class StaticExpressionFunctions
         return ExpressionFunctionsFactory.get().createExpressionFunctions().periodHoursMinutes( hours, minutes );
     }
 
-    public static String pref( String scope, String key )
+    public static String pref( Object scope, Object key )
     {
-        return ExpressionFunctionsFactory.get().createExpressionFunctions().pref( scope, key );
+        return ExpressionFunctionsFactory.get().createExpressionFunctions().pref( toString( scope ), toString( key ) );
     }
 
     /**
@@ -117,9 +119,11 @@ public class StaticExpressionFunctions
      *         it may also be merged with other queries using AND or OR.
      * @throws IllegalArgumentException If any of the parameters are empty or the operator is not AND or OR.
      */
-    public static String buildFreetextQuery( String fieldName, String searchString, String operator )
+    public static String buildFreetextQuery( Object fieldName, Object searchString, Object operator )
     {
-        return ExpressionFunctionsFactory.get().createExpressionFunctions().buildFreetextQuery( fieldName, searchString, operator );
+        return ExpressionFunctionsFactory.get().createExpressionFunctions().buildFreetextQuery( toString( fieldName ),
+                                                                                                toString( searchString ),
+                                                                                                toString( operator ) );
     }
 
     public static String getPageKey()
@@ -132,23 +136,28 @@ public class StaticExpressionFunctions
         return ExpressionFunctionsFactory.get().createExpressionFunctions().getWindowKey();
     }
 
-    public static String getPageKeyByPath(String path)
+    public static String getPageKeyByPath( Object path )
     {
-        return ExpressionFunctionsFactory.get().createExpressionFunctions().getPageKeyByPath( path );
+        return ExpressionFunctionsFactory.get().createExpressionFunctions().getPageKeyByPath( toString( path ) );
     }
 
-    public static String getPageKeysByPath(String path, String predicate)
+    public static String getPageKeysByPath( Object path, Object predicate )
     {
-        if ( !"child".equals( predicate ))
+        if ( !"child".equals( predicate ) )
         {
             throw new RuntimeException( "Only 'child' predicate is supported." );
         }
 
-        return ExpressionFunctionsFactory.get().createExpressionFunctions().getPageKeysByPath( path );
+        return ExpressionFunctionsFactory.get().createExpressionFunctions().getPageKeysByPath( toString( path ) );
     }
 
-    public static String urlEncode(String source)
+    public static String urlEncode( Object source )
     {
-        return ExpressionFunctionsFactory.get().createExpressionFunctions().urlEncode( source );
+        return ExpressionFunctionsFactory.get().createExpressionFunctions().urlEncode( toString( source ) );
+    }
+
+    private static String toString( final Object source )
+    {
+        return source == null ? null : source.toString();
     }
 }

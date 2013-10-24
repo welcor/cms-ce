@@ -1258,7 +1258,7 @@ public class UserHandlerServlet
                 if ( "all".equals( selection ) )
                 {
                     List<UserEntity> users = securityService.findUsersByQuery( userStoreKey, null, null, true );
-                    org.jdom.Document usersDoc = userXmlCreator.createUsersDocument( users, false, false );
+                    org.jdom.Document usersDoc = userXmlCreator.createUsersDocument( users, true, false );
                     reportDoc = XMLDocumentFactory.create( usersDoc ).getAsDOMDocument();
                 }
                 else

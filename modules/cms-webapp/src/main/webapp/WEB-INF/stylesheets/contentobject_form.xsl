@@ -405,6 +405,7 @@
         <div class="tab-pane" id="tab-pane-1">
             <script type="text/javascript" language="JavaScript">
                 var tabPane1 = new WebFXTabPane( document.getElementById( "tab-pane-1" ), true );
+                tabPane1.enablePageClickEvent();
             </script>
 
             <div class="tab-page" id="tab-page-1">

@@ -63,14 +63,14 @@
 
         function startReindex(){
             if (confirm("Are you sure you want to start the reindexing of all content?")) {
-                   location.href = '${baseUrl}/tools/reindexContent??op=custom&reindex=true';
+                   location.href = 'reindexContent??op=custom&reindex=true';
             }
         }
     //-->
     </script>    
 </head>
 <body onload="jumpToLast()">
-    <h1>Admin / <a href="${baseUrl}/adminpage?page=1050&op=browse">Content handler</a> / Reindex all content</h1>
+    <h1>Admin / <a href="adminpage?page=1050&op=browse">Content handler</a> / Reindex all content</h1>
     <div class="infoBox">
     [#if reindexInProgress == true]
         Reindexing in progress. Please wait for it to finish.    

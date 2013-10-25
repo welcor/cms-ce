@@ -54,7 +54,7 @@
 </head>
 <body>
 
-<h1>Admin / <a href="${baseUrl}/adminpage?page=1050&op=browse">Content handler</a> / Index Settings</h1>
+<h1>Admin / <a href="adminpage?page=1050&op=browse">Content handler</a> / Index Settings</h1>
 
 <div class="infoBox">
     <h2>Index settings</h2>

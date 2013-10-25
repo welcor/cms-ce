@@ -144,10 +144,10 @@
     <ul>
         <li>Backup the database before proceeding.</li>
         <li>Run either one step at a time, or do the entire upgrade into one step.</li>
-        <li>If successful, go back to the <a href="${baseUrl}">info page</a></li>
+        <li>If successful, go back to the <a href=".">info page</a></li>
     </ul>
 [#else]
-    Upgrade is done. System is up-to-date. Go back to <a href="${baseUrl}">info page</a>.
+    Upgrade is done. System is up-to-date. Go back to <a href=".">info page</a>.
 [/#if]
 </div>
 [#if upgradeLog?size > 0]

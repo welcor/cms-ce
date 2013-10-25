@@ -17,15 +17,15 @@
     <title>Enonic CMS - Boot Page</title>
     <meta name="robots" content="noindex,nofollow"/>
 
-    <link rel="shortcut icon" type="image/x-icon" href="${baseUrl}/resources/favicon.ico"/>
-    <link rel="stylesheet" href="${baseUrl}/resources/bootpage.css" type="text/css"/>
+    <link rel="shortcut icon" type="image/x-icon" href="resources/favicon.ico"/>
+    <link rel="stylesheet" href="resources/bootpage.css" type="text/css"/>
 </head>
 
 <body id="main">
 
 <div id="logo">
     <a href="http://www.enonic.com" rel="external">
-        <img alt="Enonic-logo" id="logo-screen" src="${baseUrl}/resources/images/logo-screen.gif" title="Enonic"/>
+        <img alt="Enonic-logo" id="logo-screen" src="resources/images/logo-screen.gif" title="Enonic"/>
     </a>
 
     <ul class="menu horizontal main">
@@ -50,7 +50,7 @@
         <strong>Upgrade Needed!</strong>
         <br/>
         Database upgrade from model <b>${upgradeFrom}</b> to model <b>${upgradeTo}</b> is needed. Admin or site will not
-        work correctly if not upgraded. Go to <a href="${baseUrl}/upgrade">upgrade</a> to upgrade.
+        work correctly if not upgraded. Go to <a href="upgrade">upgrade</a> to upgrade.
     </div>
 [/#if]
 [#if softwareUpgradeNeeded == true]
@@ -198,15 +198,15 @@
     </div>
     <div id="social" class="right">
         <a href="http://www.enonic.com/en/rss" rel="external">
-            <img src="${baseUrl}/resources/images/icon-rss-large.png" alt="RSS"/>
+            <img src="resources/images/icon-rss-large.png" alt="RSS"/>
         </a>
         <a href="http://twitter.com/#!/enonic_cms" rel="external">
-            <img src="${baseUrl}/resources/images/icon-twitter-large.png" alt="Enonic on Twitter"/>
+            <img src="resources/images/icon-twitter-large.png" alt="Enonic on Twitter"/>
         </a>
     </div>
 </div>
 
-<script type="text/javascript" src="${baseUrl}/resources/bootpage.js">//</script>
+<script type="text/javascript" src="resources/bootpage.js">//</script>
 
 </body>
 </html>

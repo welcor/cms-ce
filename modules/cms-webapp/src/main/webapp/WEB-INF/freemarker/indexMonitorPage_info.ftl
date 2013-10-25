@@ -122,12 +122,12 @@
         <br/>
     <#if reindexInProgress>
         <div class="operation-bottom">
-            <a href="${baseUrl}/tools/reindexContent?op=custom">Reindex in progress...</a><br/>
+            <a href="reindexContent?op=custom">Reindex in progress...</a><br/>
         </div>
     </#if>
 
     <#if reindexError>
-        <span class="error">Reindex failed, see <a href="${baseUrl}/tools/reindexContent?op=custom">log</a> for details</span><br/>
+        <span class="error">Reindex failed, see <a href="reindexContent?op=custom">log</a> for details</span><br/>
     </#if>
 
     <#if lastReindexTime??>

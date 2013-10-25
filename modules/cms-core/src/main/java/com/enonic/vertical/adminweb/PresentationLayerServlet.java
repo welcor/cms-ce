@@ -242,6 +242,7 @@ public final class PresentationLayerServlet
         siteXmlCreator.setIncludePathToPublicHome( true );
         siteXmlCreator.setIncludePathToHome( true );
         siteXmlCreator.setIncludeRunAs( true );
+        siteXmlCreator.setIncludeProperties( true );
         menuDataXML =
             siteXmlCreator.createLegacyGetMenuData( site, sitePropertiesService.getSiteProperties( site.getKey() ) ).getAsString();
         return menuDataXML;

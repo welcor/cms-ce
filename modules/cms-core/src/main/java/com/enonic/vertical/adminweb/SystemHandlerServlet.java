@@ -4,9 +4,12 @@
  */
 package com.enonic.vertical.adminweb;
 
+import java.io.File;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryUsage;
+import java.util.ArrayList;
+import java.util.Properties;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -20,6 +23,9 @@ import org.codehaus.jackson.map.SerializationConfig;
 import org.jdom.JDOMException;
 import org.joda.time.format.PeriodFormat;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.support.PropertiesLoaderUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -43,6 +49,7 @@ import com.enonic.cms.core.time.TimeService;
 import com.enonic.cms.core.tools.DataSourceInfoResolver;
 import com.enonic.cms.core.vacuum.ProgressInfo;
 import com.enonic.cms.core.vacuum.VacuumService;
+import com.enonic.cms.core.vhost.VirtualHost;
 
 /**
  *
@@ -67,6 +74,9 @@ public class SystemHandlerServlet
 
     @Autowired
     private CacheManager cacheManager;
+
+    @Value("${cms.home}/config/vhost.properties")
+    private String vhostFileName;
 
     private ObjectMapper jacksonObjectMapper;
 
@@ -165,8 +175,24 @@ public class SystemHandlerServlet
 
     private Document createPropertiesInfoDocument()
     {
+        Properties properties = new Properties();
+
+        final File file = new File( this.vhostFileName );
+
+        if ( file.exists() )
+        {
+            try
+            {
+                properties = PropertiesLoaderUtils.loadProperties( new FileSystemResource( file ) );
+            }
+            catch ( Exception e )
+            {
+                // nothing - empty
+            }
+        }
+
         PropertiesInfoModelFactory propertiesInfoModelFactory =
-            new PropertiesInfoModelFactory( datasourceInfoResolver, configurationProperties );
+            new PropertiesInfoModelFactory( datasourceInfoResolver, configurationProperties, properties );
         PropertiesInfoModel infoModel = propertiesInfoModelFactory.createSystemPropertiesModel();
 
         final Document doc;

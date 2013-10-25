@@ -24,6 +24,8 @@ public class PropertiesInfoModel
 
     private Properties datasourceProperties;
 
+    private Properties vhostProperties;
+
     private Map<Object, Object> configurationProperties;
 
     private static final String ROOT_XML_NAME = "model";
@@ -40,6 +42,7 @@ public class PropertiesInfoModel
         modelEl.addContent( xmlCreator.createElement( "systemProperties", "systemProperty", systemProperties ) );
         modelEl.addContent( xmlCreator.createElement( "datasourceProperties", "datasourceProperty", datasourceProperties ) );
         modelEl.addContent( xmlCreator.createElement( "configurationProperties", "configurationProperty", configurationProperties ) );
+        modelEl.addContent( xmlCreator.createElement( "vhostProperties", "vhostProperty", vhostProperties ) );
 
         return doc;
     }
@@ -58,5 +61,10 @@ public class PropertiesInfoModel
     public void setConfigurationProperties( Map<Object, Object> configurationProperties )
     {
         this.configurationProperties = configurationProperties;
+    }
+
+    public void setVhostProperties( final Properties vhostProperties )
+    {
+        this.vhostProperties = vhostProperties;
     }
 }

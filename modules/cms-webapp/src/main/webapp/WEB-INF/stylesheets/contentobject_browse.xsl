@@ -45,6 +45,7 @@
   <xsl:template name="contentobjectbrowse">
     <html>
       <head>
+        <title>%headVerticalSite% - %headPortlets%</title>
         <xsl:call-template name="javascriptPreload" />
         <link href="css/admin.css" rel="stylesheet" type="text/css" />
         <script type="text/javascript" src="javascript/admin.js">//</script>
@@ -55,7 +56,7 @@
             cms.window.attatchKeyEvent('close');
           </script>
         </xsl:if>
-              
+
       </head>
 
       <xsl:if test="$fieldname !='' or $fieldrow !=''">

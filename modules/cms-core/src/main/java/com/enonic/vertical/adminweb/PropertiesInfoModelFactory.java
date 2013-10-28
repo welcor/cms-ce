@@ -56,23 +56,7 @@ public class PropertiesInfoModelFactory
 
     private Map<Object, Object> getConfigurationProperties()
     {
-        final Properties strippedConfiguration = stripPasswords( this.configurationProperties );
-
-        final Map<Object, Object> filteredPropertiesMap = Maps.filterKeys( strippedConfiguration, new Predicate<Object>()
-        {
-            public boolean apply( Object o )
-            {
-                String key = (String) o;
-                if ( StringUtils.startsWith( key, "cms." ) )
-                {
-                    return true;
-                }
-
-                return false;
-            }
-        } );
-
-        return filteredPropertiesMap;
+        return stripPasswords( this.configurationProperties );
     }
 
 

@@ -7,6 +7,7 @@ package com.enonic.cms.core.structure;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -89,7 +90,8 @@ public class SitePropertiesServiceImpl
         try
         {
             defaultProperties = new Properties();
-            defaultProperties.load( resource.getInputStream() );
+            final InputStream in = resource.getInputStream();
+            defaultProperties.load( new InputStreamReader( in, "UTF8" ) );
         }
         catch ( IOException e )
         {
@@ -194,8 +196,9 @@ public class SitePropertiesServiceImpl
             boolean useCustomProperties = resource.exists();
             if ( useCustomProperties )
             {
-                InputStream stream = resource.getInputStream();
-                properties.load( stream );
+                final InputStream stream = resource.getInputStream();
+                properties.load( new InputStreamReader( stream, "UTF8" ) );
+
                 properties.setProperty( "customSiteProperties", "true" );
                 custom = true;
                 stream.close();

@@ -20,7 +20,7 @@
       <column name="CAT_SDESCRIPTION" length="1024"/>
     </property>
     <property name="name" type="string">
-      <column name="CAT_SNAME" length="256" not-null="true"/>
+      <column name="CAT_SNAME" length="255" not-null="true"/>
     </property>
     <property name="timestamp" type="timestamp">
       <column name="CAT_DTETIMESTAMP" not-null="true"/>

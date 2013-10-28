@@ -18,7 +18,7 @@
       <column name="MEI_SKEYWORDS" length="1024"/>
     </property>
     <property name="name" type="string">
-      <column name="MEI_SNAME" length="256" not-null="true"/>
+      <column name="MEI_SNAME" length="255" not-null="true"/>
     </property>
     <property name="noAuth" type="boolean">
       <column name="MEI_BNOAUTH"/>
@@ -57,7 +57,7 @@
       <column name="MEI_MEN_LKEY" not-null="true"/>
     </many-to-one>
     <property name="url" type="string">
-      <column name="MEI_SURL" length="256"/>
+      <column name="MEI_SURL" length="255"/>
     </property>
     <property name="openNewWindowForURL" type="boolean">
       <column name="MEI_BURLOPENNEWWIN"/>

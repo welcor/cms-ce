@@ -14,7 +14,6 @@
 
     <script type="text/javascript" language="JavaScript">
         var tabPane1 = new WebFXTabPane(document.getElementById("tab-main"), true);
-        var baseUrl = "${baseUrl}";
     </script>
 
     <div class="tab-page" id="tab-page-1">
@@ -29,7 +28,7 @@
     function clearCache(id) {
         var request = $.ajax({
             type: "POST",
-            url: "${baseUrl}/tools/cacheInfo?cache=" + id + "&op=clear-cache"
+            url: "cacheInfo?cache=" + id + "&op=clear-cache"
         });
 
         request.done();
@@ -37,7 +36,7 @@
     }
 
     function loadData() {
-        $('#cacheList').load('${baseUrl}/tools/cacheInfo?op=info');
+        $('#cacheList').load('cacheInfo?op=info');
         setTimeout(loadData, 5000);
     }
 

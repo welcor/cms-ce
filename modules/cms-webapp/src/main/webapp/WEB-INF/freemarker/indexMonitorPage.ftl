@@ -19,13 +19,13 @@
             if (confirm("WARNING: Are you sure you want to rebuild the index?\n\n" +
                         "All data will be deleted, and a full reindex will be done. " +
                         "This will affect your live sites by making content not available until it has been reindexed.")) {
-                location.href = "${baseUrl}/tools/reindexContent?op=custom&recreateIndex=true&reindex=true";
+                location.href = "reindexContent?op=custom&recreateIndex=true&reindex=true";
             }
         }
 
         function startReindex() {
             if (confirm("Reindex all content now?")) {
-                location.href = '${baseUrl}/tools/reindexContent??op=custom&reindex=true';
+                location.href = 'reindexContent??op=custom&reindex=true';
             }
         }
     </script>
@@ -38,7 +38,6 @@
 
     <script type="text/javascript" language="JavaScript">
         var tabPane1 = new WebFXTabPane(document.getElementById("tab-main"), true);
-        var baseUrl = "${baseUrl}";
     </script>
 
     <div class="tab-page" id="tab-page-1">
@@ -51,7 +50,7 @@
 
 <script type="text/javascript">
     function loadData() {
-        $('#indexInfo').load('${baseUrl}/tools/indexMonitor?op=info');
+        $('#indexInfo').load('indexMonitor?op=info');
         setTimeout(loadData, 10000);
     }
 

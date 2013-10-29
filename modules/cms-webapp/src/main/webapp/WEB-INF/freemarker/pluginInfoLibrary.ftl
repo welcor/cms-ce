@@ -25,7 +25,7 @@ ${plugin.name} -
         <b style="color: #00A000">ACTIVE</b>
     [/#if] -
     <a href="javascript: showDetails(${plugin.key})">details</a>
-    | <a href="${baseUrl}/tools/pluginInfo?op=custom&update=${plugin.key}">update</a>
+    | <a href="pluginInfo?op=custom&update=${plugin.key}">update</a>
     <ul>
         <li>${plugin.id} ${plugin.version} deployed ${plugin.timestamp}</li>
     </ul>

@@ -15,7 +15,6 @@
 
     <script type="text/javascript" language="JavaScript">
         var tabPane1 = new WebFXTabPane(document.getElementById("tab-main"), true);
-        var baseUrl = "${baseUrl}";
     </script>
 
     <div class="tab-page" id="tab-page-1">
@@ -28,7 +27,7 @@
 
 <script type="text/javascript">
     function loadData() {
-        $('#nodeList').load('${baseUrl}/tools/clusterInfo?op=info');
+        $('#nodeList').load('clusterInfo?op=info');
         setTimeout(loadData, 5000);
     }
 

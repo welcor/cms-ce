@@ -79,7 +79,7 @@ public final class VacuumServiceImpl
     /**
      * Clean unused content.
      */
-    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class, timeout = 3600)
     public void cleanUnusedContent()
     {
         if ( progressInfo.isInProgress() || !isAdmin() )

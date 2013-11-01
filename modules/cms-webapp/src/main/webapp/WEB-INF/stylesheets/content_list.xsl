@@ -1853,6 +1853,7 @@
 
                         </xsl:for-each>
 
+                        <!-- Status column -->
                         <td align="center" class="{$css-class}" title="{$tooltip-text}">
                           <xsl:attribute name="id">
                             <xsl:text>operation_default_</xsl:text>
@@ -1862,13 +1863,32 @@
                             <xsl:with-param name="node" select="$currentContent"/>
                           </xsl:call-template>
 
-                          <!-- Status column -->
-                          <xsl:call-template name="publishstatus">
-                            <xsl:with-param name="key" select="@key"/>
-                            <xsl:with-param name="state" select="@state"/>
-                            <xsl:with-param name="publishfrom" select="@publishfrom"/>
-                            <xsl:with-param name="publishto" select="@publishto"/>
-                          </xsl:call-template>
+                          <table border="0" cellspacing="0" cellpadding="0">
+                            <tr>
+
+                              <td align="center">
+                                <xsl:call-template name="publishstatus">
+                                  <xsl:with-param name="key" select="@key"/>
+                                  <xsl:with-param name="state" select="@state"/>
+                                  <xsl:with-param name="publishfrom" select="@publishfrom"/>
+                                  <xsl:with-param name="publishto" select="@publishto"/>
+                                </xsl:call-template>
+                              </td>
+
+                              <xsl:if test="@published = 'published'">
+                                <td align="center">
+                                  <img src="./images/icon_content_approve.gif"/>
+                                </td>
+                              </xsl:if>
+
+                              <xsl:if test="@published = 'unpublished'">
+                                <td align="center">
+                                  <img src="./images/icon_content_unapprove.gif"/>
+                                </td>
+                              </xsl:if>
+
+                            </tr>
+                          </table>
                         </td>
 
                         <!-- Content operations column -->

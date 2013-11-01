@@ -38,6 +38,7 @@ import com.enonic.cms.core.language.LanguageEntity;
 import com.enonic.cms.core.language.LanguageKey;
 import com.enonic.cms.core.security.user.UserEntity;
 import com.enonic.cms.core.security.userstore.UserStoreEntity;
+import com.enonic.cms.core.structure.SiteEntity;
 import com.enonic.cms.core.structure.menuitem.section.SectionContentXmlCreator;
 
 public class ContentXMLCreator
@@ -411,6 +412,7 @@ public class ContentXMLCreator
         contentEl.setAttribute( "approved", Boolean.toString( contentVersion.isApproved() ) );
         contentEl.setAttribute( "state", Integer.toString( contentVersion.getState( onlineCheckDate ) ) );
         contentEl.setAttribute( "status", Integer.toString( contentVersion.getStatus().getKey() ) );
+        contentEl.setAttribute( "published", computePublishingInSection( content ) );
         contentEl.setAttribute( "contenttype", contentType.getName() );
         contentEl.setAttribute( "contenttypekey", Integer.toString( contentType.getKey() ) );
         contentEl.setAttribute( "created", CmsDateAndTimeFormats.printAs_XML_DATE( content.getCreatedAt() ) );
@@ -515,6 +517,42 @@ public class ContentXMLCreator
         }
 
         return contentEl;
+    }
+
+    /**
+     * Compute if the content has been added to one (or more) sections, and if it is published or not in these sections.
+     * @param content observed content
+     * @return
+     * - 'published' when content is in one or more sections and published in at least one of them
+     * - 'unpublished' when content is in one or more sections, but not published in any of them
+     * - 'none' when the content is not in any section
+     */
+    private String computePublishingInSection( final ContentEntity content )
+    {
+        // 'published', 'unpublished', 'none'
+
+        boolean unpublished = false;
+
+        final ContentLocationSpecification spec = new ContentLocationSpecification();
+        final ContentLocations contentLocations = content.getLocations( spec );
+
+        for ( final SiteEntity site : contentLocations.getSites() )
+        {
+            for ( final ContentLocation contentLocation : contentLocations.getLocationsBySite( site.getKey() ) )
+            {
+                if ( contentLocation.isInSection() )
+                {
+                    unpublished = true;
+
+                    if ( contentLocation.isApproved() )
+                    {
+                        return "published";
+                    }
+                }
+            }
+        }
+
+        return unpublished ? "unpublished" : "none";
     }
 
     private void addAssigner( ContentEntity content, Element contentEl )

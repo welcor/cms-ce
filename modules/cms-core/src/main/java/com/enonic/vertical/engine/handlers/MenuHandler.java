@@ -302,7 +302,7 @@ public final class MenuHandler
 
         //// build xml for children:
         Iterator<Element> iter = menuItems.iterator();
-        Connection con = null;
+        Connection con;
         PreparedStatement preparedStmt = null;
         ResultSet resultSet = null;
 
@@ -347,11 +347,10 @@ public final class MenuHandler
         PreparedStatement preparedStmt = null;
         ResultSet resultSet = null;
         TIntArrayList keyArray = new TIntArrayList();
-        Connection con = null;
 
         try
         {
-            con = getConnection();
+            Connection con = getConnection();
             preparedStmt = con.prepareStatement( MENU_SELECT_ITEM_KEYS_BY_PARENT );
             preparedStmt.setInt( 1, parentKey );
             resultSet = preparedStmt.executeQuery();
@@ -630,7 +629,7 @@ public final class MenuHandler
                     buildSectionTypeXML( key, menuItemElement );
                     break;
                 case SHORTCUT:
-                    buildShortcutTypeXML( key, menuItemElement );
+                    buildShortcutTypeXML( new MenuItemKey(key), menuItemElement );
                     break;
             }
         }
@@ -668,26 +667,29 @@ public final class MenuHandler
         XMLTool.mergeDocuments( menuItemElement, sectionDoc, true );
     }
 
-    private void buildShortcutTypeXML( int menuItemKey, Element menuItemElement )
+    private void buildShortcutTypeXML( MenuItemKey menuItemKey, Element menuItemElement )
     {
-        StringBuffer sql = XDG.generateSelectSQL( db.tMenuItem, db.tMenuItem.mei_lKey );
-        Object[] columnValues = getCommonHandler().getObjects( sql.toString(), menuItemKey );
-        if ( columnValues.length > 0 )
+        MenuItemEntity currentMenuItem = menuItemDao.findByKey( menuItemKey );
+        if ( currentMenuItem != null )
         {
+            MenuItemEntity shortcutMenuItem = currentMenuItem.getMenuItemShortcut();
+
             Element shortcutElem = XMLTool.createElement( menuItemElement.getOwnerDocument(), menuItemElement, "shortcut" );
-            Integer shortcut = (Integer) columnValues[19];
-            final String shortcutKey = ( shortcut == null ) ? "" : String.valueOf( shortcut );
-            shortcutElem.setAttribute( "key", shortcutKey );
-            final String menuItemName = ( shortcut == null ) ? "" : getMenuItemName( shortcut );
-            shortcutElem.setAttribute( "name", menuItemName );
-            Integer forward = (Integer) columnValues[20];
-            if ( forward == 0 )
+            if (shortcutMenuItem != null) {
+                shortcutElem.setAttribute( "key", shortcutMenuItem.getKey().toString() );
+                shortcutElem.setAttribute( "name", shortcutMenuItem.getName() );
+            } else {
+                shortcutElem.setAttribute( "key", "" );
+                shortcutElem.setAttribute( "name", "" );
+            }
+
+            if ( currentMenuItem.isShortcutForward() )
             {
-                shortcutElem.setAttribute( "forward", "false" );
+                shortcutElem.setAttribute( "forward", "true" );
             }
             else
             {
-                shortcutElem.setAttribute( "forward", "true" );
+                shortcutElem.setAttribute( "forward", "false" );
             }
 
         }
@@ -739,11 +741,10 @@ public final class MenuHandler
 
         // Prepare insertion into the database
         SiteKey siteKey = null;
-        Connection con = null;
         PreparedStatement preparedStmt = null;
         try
         {
-            con = getConnection();
+            Connection con = getConnection();
 
             tmp = rootElement.getAttribute( "key" );
             if ( !useOldKey || tmp == null || tmp.length() == 0 )
@@ -1079,13 +1080,12 @@ public final class MenuHandler
             VerticalEngineLogger.errorCreate( "Invalid menu item type {0}.", new Object[]{type}, null );
         }
 
-        Connection con = null;
         PreparedStatement preparedStmt = null;
         MenuItemKey menuItemKey = null;
 
         try
         {
-            con = getConnection();
+            Connection con = getConnection();
 
             // key
             String keyStr = menuItemElement.getAttribute( "key" );
@@ -1504,13 +1504,12 @@ public final class MenuHandler
             XDG.generateUpdateSQL( db.tMenuItem, new Column[]{db.tMenuItem.mei_mei_lShortcut, db.tMenuItem.mei_bShortcutForward},
                                    new Column[]{db.tMenuItem.mei_lKey} );
 
-        Connection con = null;
         PreparedStatement prepStmt = null;
 
         try
 
         {
-            con = getConnection();
+            Connection con = getConnection();
             prepStmt = con.prepareStatement( sql.toString() );
 
             prepStmt.setInt( 1, shortcut );
@@ -1546,12 +1545,11 @@ public final class MenuHandler
 
     private void updateShortcutDestinationInDB( Integer menuItemKey, Integer shortcutKey )
     {
-        Connection con = null;
         PreparedStatement preparedStmt = null;
 
         try
         {
-            con = getConnection();
+            Connection con = getConnection();
 
             preparedStmt = con.prepareStatement( MENU_ITEM_SHORTCUT_UPDATE );
             preparedStmt.setInt( 1, shortcutKey );
@@ -1576,11 +1574,10 @@ public final class MenuHandler
         StringBuffer sql =
             XDG.generateUpdateSQL( db.tMenuItem, new Column[]{db.tMenuItem.mei_mei_lShortcut, db.tMenuItem.mei_bShortcutForward},
                                    new Column[]{db.tMenuItem.mei_lKey} );
-        Connection con = null;
         PreparedStatement prepStmt = null;
         try
         {
-            con = getConnection();
+            Connection con = getConnection();
             prepStmt = con.prepareStatement( sql.toString() );
             prepStmt.setNull( 1, Types.INTEGER );
             prepStmt.setNull( 2, Types.INTEGER );
@@ -1634,12 +1631,11 @@ public final class MenuHandler
 
         Document doc = XMLTool.createDocument( "menus" );
 
-        Connection con = null;
         PreparedStatement preparedStmt = null;
         ResultSet result = null;
         try
         {
-            con = getConnection();
+            Connection con = getConnection();
 
             Element menuElement = getMenuData( doc.getDocumentElement(), menuKey );
 
@@ -1686,14 +1682,13 @@ public final class MenuHandler
     private String getMenuName( int menuKey )
     {
 
-        Connection con = null;
         PreparedStatement preparedStmt = null;
         ResultSet resultSet = null;
         String name;
 
         try
         {
-            con = getConnection();
+            Connection con = getConnection();
             preparedStmt = con.prepareStatement( MENU_SELECT_NAME );
             preparedStmt.setInt( 1, menuKey );
             resultSet = preparedStmt.executeQuery();
@@ -1728,12 +1723,11 @@ public final class MenuHandler
         Document doc = rootElement.getOwnerDocument();
         Element menuElement = XMLTool.createElement( doc, rootElement, "menu" );
 
-        Connection con = null;
         PreparedStatement preparedStmt = null;
         ResultSet result = null;
         try
         {
-            con = getConnection();
+            Connection con = getConnection();
 
             preparedStmt = con.prepareStatement( MENU_SELECT_BY_KEY );
             preparedStmt.setInt( 1, menuId );
@@ -1850,14 +1844,13 @@ public final class MenuHandler
 
     public int getMenuKeyByMenuItem( int menuItemKey )
     {
-        Connection con = null;
         PreparedStatement prepStmt = null;
         ResultSet resultSet = null;
         int menuKey = -1;
 
         try
         {
-            con = getConnection();
+            Connection con = getConnection();
             prepStmt = con.prepareStatement( MENU_GET_KEY_BY_MENU_ITEM );
             prepStmt.setInt( 1, menuItemKey );
             resultSet = prepStmt.executeQuery();
@@ -1885,13 +1878,11 @@ public final class MenuHandler
         doc = XMLTool.createDocument( "menuitems" );
         rootElement = doc.getDocumentElement();
 
-        Connection con = null;
         PreparedStatement preparedStmt = null;
         ResultSet resultSet = null;
         try
         {
-            con = getConnection();
-
+            Connection con = getConnection();
             preparedStmt = con.prepareStatement( getSecurityHandler().appendMenuItemSQL( user, MENU_ITEM_SELECT_BY_KEY ) );
             preparedStmt.setInt( 1, key );
             resultSet = preparedStmt.executeQuery();
@@ -1960,12 +1951,11 @@ public final class MenuHandler
         Document doc = XMLTool.createDocument( "menuitems" );
         Element rootElement = doc.getDocumentElement();
 
-        Connection con = null;
         PreparedStatement preparedStmt = null;
         ResultSet resultSet = null;
         try
         {
-            con = getConnection();
+            Connection con = getConnection();
 
             String sql = getSecurityHandler().appendMenuItemSQL( user, MENU_ITEM_SELECT_BY_KEY );
             preparedStmt = con.prepareStatement( sql );
@@ -1996,12 +1986,11 @@ public final class MenuHandler
     {
         ArrayList<Integer> keys = new ArrayList<Integer>();
 
-        Connection con = null;
         PreparedStatement preparedStmt = null;
         ResultSet result = null;
         try
         {
-            con = getConnection();
+            Connection con = getConnection();
             if ( parent == -1 )
             {
                 preparedStmt = con.prepareStatement( MENU_SELECT_KEYS_BY_MENU_KEY_WO_PARENT );
@@ -2067,11 +2056,10 @@ public final class MenuHandler
     {
 
         // remove the darn thing
-        Connection con = null;
         PreparedStatement preparedStmt = null;
         try
         {
-            con = getConnection();
+            Connection con = getConnection();
 
             // remove sections
             int[] sectionKeys = getSectionHandler().getSectionKeysByMenu( key );
@@ -2144,7 +2132,7 @@ public final class MenuHandler
         throws VerticalRemoveException, VerticalSecurityException
     {
 
-        MenuItemEntity menuItemToRemove = menuItemDao.findByKey( menuItemKey );
+        MenuItemEntity menuItemToRemove = menuItemDao.findByKey( new MenuItemKey(menuItemKey) );
 
         List<MenuItemEntity> shortcuttingMenuItems = getShortcuttingMenuItems( menuItemToRemove );
 
@@ -2177,13 +2165,11 @@ public final class MenuHandler
 
         getCommonHandler().cascadeDelete( db.tMenuItem, menuItemKey );
 
-        Connection con = null;
-
         PreparedStatement preparedStmt = null;
         ResultSet resultSet = null;
         try
         {
-            con = getConnection();
+            Connection con = getConnection();
 
             // get menu item name and menu key (used by event handling)
             String name = getMenuItemName( menuItemKey );
@@ -2347,11 +2333,10 @@ public final class MenuHandler
         String tmp = root_elem.getAttribute( "key" );
         SiteKey menuKey = new SiteKey( tmp );
 
-        Connection con = null;
         PreparedStatement preparedStmt = null;
         try
         {
-            con = getConnection();
+            Connection con = getConnection();
 
             // Update the main menu table:
             preparedStmt = con.prepareStatement( MENU_UPDATE );
@@ -2657,11 +2642,10 @@ public final class MenuHandler
         String tmp = root_elem.getAttribute( "key" );
         int menuKey = Integer.parseInt( tmp );
 
-        Connection con = null;
         PreparedStatement preparedStmt = null;
         try
         {
-            con = getConnection();
+            Connection con = getConnection();
 
             // Update the main menu table:
             preparedStmt = con.prepareStatement( MENUDATA_UPDATE );
@@ -2861,10 +2845,9 @@ public final class MenuHandler
             VerticalEngineLogger.errorCreate( "Menu item name already exists on this level: {0}", new Object[]{menuItemName}, null );
         }
 
-        Connection con = null;
         try
         {
-            con = getConnection();
+            Connection con = getConnection();
 
             // menu item types:
             Hashtable<String, Integer> itemTypes = getMenuItemTypesAsHashtable();
@@ -3078,11 +3061,10 @@ public final class MenuHandler
         String tmp;
         boolean modified = "modified".equals( menuItemElem.getAttribute( "modified" ) );
 
-        Connection con = null;
         PreparedStatement preparedStmt = null;
         try
         {
-            con = getConnection();
+            Connection con = getConnection();
 
             // update the main table:
             int psCounter = 1;
@@ -3656,7 +3638,6 @@ public final class MenuHandler
     public Document getMenuItemsByContentObject( User user, int cobKey )
     {
 
-        Connection con = null;
         PreparedStatement preparedStmt = null;
         ResultSet resultSet = null;
 
@@ -3664,7 +3645,7 @@ public final class MenuHandler
 
         try
         {
-            con = getConnection();
+            Connection con = getConnection();
             preparedStmt = con.prepareStatement( MENU_ITEMS_BY_CONTENTOBJECT );
             preparedStmt.setInt( 1, cobKey );
             resultSet = preparedStmt.executeQuery();
@@ -3697,7 +3678,6 @@ public final class MenuHandler
     public Document getMenuItemsByPageTemplates( User user, int[] pageTemplateKeys )
     {
 
-        Connection con = null;
         PreparedStatement preparedStmt = null;
         ResultSet resultSet = null;
 
@@ -3718,7 +3698,7 @@ public final class MenuHandler
                 }
                 sql.append( "))" );
 
-                con = getConnection();
+                Connection con = getConnection();
                 preparedStmt = con.prepareStatement( sql.toString() );
                 resultSet = preparedStmt.executeQuery();
 
@@ -3774,15 +3754,13 @@ public final class MenuHandler
 
         Hashtable<String, Element> hashtable_menus = new Hashtable<String, Element>();
 
-        Connection con = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
 
         Document doc = XMLTool.createDocument( "menus" );
         try
         {
-            con = getConnection();
-
+            Connection con = getConnection();
             statement = con.prepareStatement( sqlMenus.toString() );
             addValuesToPreparedStatement( statement, paramValues );
 
@@ -3905,7 +3883,6 @@ public final class MenuHandler
 
     public Document getAdminMenu( User user, int[] menuKeys, String[] menuItemTypes, boolean includeReadOnlyAccessRight )
     {
-        Connection conn = null;
         Document doc = XMLTool.createDocument( "menus" );
 
         if ( menuKeys == null )
@@ -3925,14 +3902,14 @@ public final class MenuHandler
 
         try
         {
-            conn = getConnection();
+            Connection con = getConnection();
             HashMap<Integer, Element> menuMap =
-                findAdminMenuElements( doc, conn, groupKeys, anonGroupKey, adminRights, includeReadOnlyAccessRight );
+                findAdminMenuElements( doc, con, groupKeys, anonGroupKey, adminRights, includeReadOnlyAccessRight );
             HashMap<Integer, List<Element>> menuItemMap = new HashMap<Integer, List<Element>>();
 
             for ( int menuKey : menuKeys )
             {
-                menuItemMap.put( menuKey, findAdminMenuItemElements( doc, conn, menuKey, groupKeys, anonGroupKey, adminRights ) );
+                menuItemMap.put( menuKey, findAdminMenuItemElements( doc, con, menuKey, groupKeys, anonGroupKey, adminRights ) );
             }
 
             composeAdminMenu( doc, menuMap, menuItemMap, menuItemTypes, includeReadOnlyAccessRight );

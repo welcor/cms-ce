@@ -5,6 +5,8 @@
 package com.enonic.cms.core.localization;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Locale;
 import java.util.Properties;
 
@@ -91,7 +93,8 @@ public final class LocalizationResourceBundleServiceImpl
         {
             try
             {
-                properties.load( resourceFile.getDataAsInputStream() );
+                final InputStream in = resourceFile.getDataAsInputStream();
+                properties.load( new InputStreamReader( in, "UTF8" ) );
 
             }
             catch ( final IOException e )

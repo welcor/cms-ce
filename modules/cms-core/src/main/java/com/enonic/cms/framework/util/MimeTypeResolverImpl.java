@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Map;
 import java.util.Properties;
 
@@ -159,7 +160,8 @@ public final class MimeTypeResolverImpl
             final File file = new File( mimetypesLocation );
             if ( file.exists() )
             {
-                userProps.load( new FileInputStream( file ) );
+                final InputStream in = new FileInputStream( file );
+                userProps.load( new InputStreamReader( in, "UTF8" ) );
 
                 LOG.info( "loaded {} user-defined mimetypes from file {}", userProps.size(), mimetypesLocation );
             }
@@ -178,7 +180,7 @@ public final class MimeTypeResolverImpl
                 throw new InternalError( "Unable to find mimetypes.properties" );
             }
 
-            systemProps.load( input );
+            systemProps.load( new InputStreamReader( input, "UTF8" ) );
         }
         catch ( IOException e )
         {

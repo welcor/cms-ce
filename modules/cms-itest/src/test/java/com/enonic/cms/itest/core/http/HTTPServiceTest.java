@@ -75,7 +75,7 @@ public class HTTPServiceTest
         throws Exception
     {
         setResponse( SAMPLE_TEXT_RESPONSE, "utf8", "text/plain" );
-        final String result = this.httpService.getURL( buildServerUrl( "/test" ), "utf8", 5000 );
+        final String result = this.httpService.getURL( buildServerUrl( "/test" ), "utf8", 5000, 5000 );
         assertEquals( SAMPLE_TEXT_RESPONSE, result );
     }
 
@@ -84,7 +84,7 @@ public class HTTPServiceTest
         throws Exception
     {
         setResponse( SAMPLE_TEXT_RESPONSE, "cp1252", "text/plain" );
-        final String result = this.httpService.getURL( buildServerUrl( "/test" ), "cp1252", 5000 );
+        final String result = this.httpService.getURL( buildServerUrl( "/test" ), "cp1252", 5000, 5000 );
         assertEquals( SAMPLE_TEXT_RESPONSE, result );
     }
 
@@ -97,7 +97,7 @@ public class HTTPServiceTest
 
         setResponse( "<?xml version=\"1.0\" encoding=\"Windows-1252\" ?>" + SAMPLE_XML_RESPONSE, "cp1252", "text/xml" );
 
-        final byte[] httpResult = this.httpService.getURLAsBytes( buildServerUrl( "/test" ), 5000 );
+        final byte[] httpResult = this.httpService.getURLAsBytes( buildServerUrl( "/test" ), 5000, 5000 );
         final ByteArrayInputStream byteStream = new ByteArrayInputStream( httpResult );
         final Document resultDoc = XMLTool.domparse( byteStream );
         final String resultXML = XMLTool.documentToString( resultDoc );
@@ -111,7 +111,7 @@ public class HTTPServiceTest
     public void get_url_as_text_wrong_url_test()
         throws Exception
     {
-        final String result = this.httpService.getURL( buildServerUrl( "/unknown" ), null, 5000 );
+        final String result = this.httpService.getURL( buildServerUrl( "/unknown" ), null, 5000, 5000 );
         assertNull( result );
     }
 

@@ -50,7 +50,7 @@
         <strong>Upgrade Needed!</strong>
         <br/>
         Database upgrade from model <b>${upgradeFrom}</b> to model <b>${upgradeTo}</b> is needed. Admin or site will not
-        work correctly if not upgraded. Go to <a href="upgrade">upgrade</a> to upgrade.
+        work correctly if not upgraded. Go to <a href="${baseUrl}/upgrade">upgrade</a> to upgrade.
     </div>
 [/#if]
 [#if softwareUpgradeNeeded == true]

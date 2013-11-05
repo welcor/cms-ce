@@ -45,7 +45,7 @@ public class GetUrlAsTextHandlerTest
     {
         this.request.addParam( "url", "http://www.enonic.com" );
         testHandle( "getUrlAsText_result" );
-        Mockito.verify( this.httpService, Mockito.times( 1 ) ).getURL( "http://www.enonic.com", "UTF-8", -1, -1 );
+        Mockito.verify( this.httpService, Mockito.times( 1 ) ).getURL( "http://www.enonic.com", "UTF-8", 5000, -1 );
     }
 
     @Test

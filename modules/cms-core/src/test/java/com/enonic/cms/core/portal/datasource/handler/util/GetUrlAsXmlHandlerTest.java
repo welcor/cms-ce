@@ -45,7 +45,7 @@ public class GetUrlAsXmlHandlerTest
     {
         this.request.addParam( "url", "http://www.enonic.com" );
         testHandle( "getUrlAsXml_result" );
-        Mockito.verify( this.httpService, Mockito.times( 1 ) ).getURLAsBytes( "http://www.enonic.com", -1, -1 );
+        Mockito.verify( this.httpService, Mockito.times( 1 ) ).getURLAsBytes( "http://www.enonic.com", 5000, 5000 );
     }
 
     @Test
@@ -76,7 +76,7 @@ public class GetUrlAsXmlHandlerTest
 
         this.request.addParam( "url", "http://www.enonic.com" );
         testHandle( "getUrlAsXmlUrlYieldsNull_result" );
-        Mockito.verify( this.httpService, Mockito.times( 1 ) ).getURLAsBytes( "http://www.enonic.com", -1, -1 );
+        Mockito.verify( this.httpService, Mockito.times( 1 ) ).getURLAsBytes( "http://www.enonic.com", 5000, 5000 );
     }
 
 

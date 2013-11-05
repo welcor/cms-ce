@@ -15,5 +15,5 @@ public final class GetUrlAsXmlParams
 
     public int timeout = DEFAULT_TIMEOUT_FOR_CONNECT;
 
-    public int readTimeout = DEFAULT_TIMEOUT_FOR_CONNECT;
+    public int readTimeout = DEFAULT_TIMEOUT_FOR_READ;
 }

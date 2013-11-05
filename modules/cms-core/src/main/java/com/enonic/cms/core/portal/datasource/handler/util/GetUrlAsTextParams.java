@@ -15,7 +15,7 @@ public final class GetUrlAsTextParams
 
     public int timeout = DEFAULT_TIMEOUT_FOR_CONNECT;
 
-    public int readTimeout = DEFAULT_TIMEOUT_FOR_CONNECT;
+    public int readTimeout = DEFAULT_TIMEOUT_FOR_READ;
 
     public String encoding = "UTF-8";
 }

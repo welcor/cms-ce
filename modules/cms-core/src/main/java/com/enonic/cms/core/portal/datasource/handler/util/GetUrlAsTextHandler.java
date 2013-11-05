@@ -31,7 +31,7 @@ public final class GetUrlAsTextHandler
     protected Document handle( final DataSourceRequest req, final GetUrlAsTextParams params )
         throws Exception
     {
-        final String urlResult = this.httpService.getURL( params.url, params.encoding, params.timeout );
+        final String urlResult = this.httpService.getURL( params.url, params.encoding, params.timeout, params.readTimeout );
         final Element root = new Element( "urlresult" );
         root.setText( urlResult );
         return new Document( root );

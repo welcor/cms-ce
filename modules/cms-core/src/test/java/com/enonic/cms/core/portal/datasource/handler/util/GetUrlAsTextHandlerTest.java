@@ -27,7 +27,8 @@ public class GetUrlAsTextHandlerTest
         throws Exception
     {
         this.httpService = Mockito.mock( HTTPService.class );
-        Mockito.when( this.httpService.getURL( Mockito.anyString(), Mockito.anyString(), Mockito.anyInt() ) ).thenReturn( "Hello World" );
+        Mockito.when( this.httpService.getURL( Mockito.anyString(), Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt() ) ).thenReturn(
+            "Hello World" );
         this.handler.setHttpService( this.httpService );
     }
 
@@ -44,7 +45,7 @@ public class GetUrlAsTextHandlerTest
     {
         this.request.addParam( "url", "http://www.enonic.com" );
         testHandle( "getUrlAsText_result" );
-        Mockito.verify( this.httpService, Mockito.times( 1 ) ).getURL( "http://www.enonic.com", "UTF-8", 5000 );
+        Mockito.verify( this.httpService, Mockito.times( 1 ) ).getURL( "http://www.enonic.com", "UTF-8", -1, -1 );
     }
 
     @Test
@@ -54,8 +55,9 @@ public class GetUrlAsTextHandlerTest
         this.request.addParam( "url", "http://www.enonic.com" );
         this.request.addParam( "encoding", "ISO-8859-1" );
         this.request.addParam( "timeout", "1000" );
+        this.request.addParam( "readTimeout", "1000" );
         testHandle( "getUrlAsText_result" );
-        Mockito.verify( this.httpService, Mockito.times( 1 ) ).getURL( "http://www.enonic.com", "ISO-8859-1", 1000 );
+        Mockito.verify( this.httpService, Mockito.times( 1 ) ).getURL( "http://www.enonic.com", "ISO-8859-1", 1000, 1000 );
     }
 
     @Test(expected = DataSourceException.class)
@@ -76,7 +78,8 @@ public class GetUrlAsTextHandlerTest
         this.request.addParam( "encoding", "ISO-8859-1" );
         this.request.addParam( "timeout", "1000" );
 
-        Mockito.when( this.httpService.getURL( Mockito.anyString(), Mockito.anyString(), Mockito.anyInt() ) ).thenReturn( null );
+        Mockito.when( this.httpService.getURL( Mockito.anyString(), Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt() ) ).thenReturn(
+            null );
 
         testHandle( "getUrlAsTextUrlYieldsNull_result" );
 

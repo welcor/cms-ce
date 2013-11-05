@@ -26,18 +26,18 @@ public class HTTPService
 
     private static final Logger LOG = LoggerFactory.getLogger( HTTPService.class );
 
-    private final static int DEFAULT_CONNECTION_TIMEOUT = 2000;
+    private final static int DEFAULT_CONNECTION_TIMEOUT = 5000;
 
-    private final static int DEFAULT_CONNECTION_READ_TIMEOUT = 10000;
+    private final static int DEFAULT_READ_TIMEOUT = 10000;
 
     private String userAgent;
 
-    public String getURL( String address, String encoding, int timeoutMs )
+    public String getURL( String address, String encoding, int timeoutMs, int readTimeoutMs )
     {
         BufferedReader reader = null;
         try
         {
-            URLConnection urlConn = setUpConnection( address, timeoutMs );
+            URLConnection urlConn = setUpConnection( address, timeoutMs, readTimeoutMs );
             reader = setUpReader( encoding, urlConn );
             StringBuffer sb = new StringBuffer( 1024 );
             char[] line = new char[1024];
@@ -71,12 +71,12 @@ public class HTTPService
         return null;
     }
 
-    public byte[] getURLAsBytes( String address, int timeoutMs )
+    public byte[] getURLAsBytes( String address, int timeoutMs, int readTimeoutMs )
     {
         BufferedReader reader = null;
         try
         {
-            URLConnection urlConn = setUpConnection( address, timeoutMs );
+            URLConnection urlConn = setUpConnection( address, timeoutMs, readTimeoutMs );
 
             InputStream responseStream = urlConn.getInputStream();
             return IOUtils.toByteArray( responseStream );
@@ -102,13 +102,13 @@ public class HTTPService
         return null;
     }
 
-    private URLConnection setUpConnection( String address, int timeoutMs )
+    private URLConnection setUpConnection( String address, int timeoutMs, int readTimeoutMs )
         throws IOException
     {
         URL url = new URL( address );
         URLConnection urlConn = url.openConnection();
         urlConn.setConnectTimeout( timeoutMs > 0 ? timeoutMs : DEFAULT_CONNECTION_TIMEOUT );
-        urlConn.setReadTimeout( DEFAULT_CONNECTION_READ_TIMEOUT );
+        urlConn.setReadTimeout( readTimeoutMs > 0 ? readTimeoutMs : DEFAULT_READ_TIMEOUT );
         urlConn.setRequestProperty( "User-Agent", userAgent );
         String userInfo = url.getUserInfo();
         if ( StringUtils.isNotBlank( userInfo ) )

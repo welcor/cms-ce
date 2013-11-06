@@ -416,10 +416,18 @@ public class ExpressionFunctionsExecutorTest
     }
 
     @Test
-    public void testPropertiesFromSiteInFunc()
+    public void testProperties1FromSiteInUpperFunc()
         throws Exception
     {
         String evaluated = efExecutor.evaluate( "${upper(properties.cms.site.test)}" );
+        assertEquals( "SITE", evaluated );
+    }
+
+    @Test
+    public void testProperties2FromSiteInUpperFunc()
+        throws Exception
+    {
+        String evaluated = efExecutor.evaluate( "${upper(properties['cms.site.test'])}" );
         assertEquals( "SITE", evaluated );
     }
 
@@ -437,6 +445,14 @@ public class ExpressionFunctionsExecutorTest
     {
         String evaluated = efExecutor.evaluate( "${properties['cms.test']}" );
         assertEquals( "overridden", evaluated );
+    }
+
+    @Test
+    public void testContentQuery()
+        throws Exception
+    {
+        String evaluated = efExecutor.evaluate( "data.sn = ${properties['cms.test']}" );
+        assertEquals( "data.sn = overridden", evaluated );
     }
 
     @Test

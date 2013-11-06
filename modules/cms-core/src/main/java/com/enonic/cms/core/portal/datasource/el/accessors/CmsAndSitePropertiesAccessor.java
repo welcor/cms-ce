@@ -11,7 +11,7 @@ import java.util.Properties;
 import com.enonic.cms.core.structure.SiteProperties;
 
 public final class CmsAndSitePropertiesAccessor
-    implements Accessor<CmsAndSitePropertiesAccessor>
+    implements Accessor<CmsAndSitePropertiesAccessor>, CharSequence
 {
     private final Map<Object, Object> rootProperties;
 
@@ -57,5 +57,23 @@ public final class CmsAndSitePropertiesAccessor
         }
 
         return value != null ? value.toString() : null;
+    }
+
+    @Override
+    public int length()
+    {
+        return toString().length();
+    }
+
+    @Override
+    public char charAt( final int index )
+    {
+        return toString().charAt( index );
+    }
+
+    @Override
+    public CharSequence subSequence( final int start, final int end )
+    {
+        return toString().subSequence( start, end );
     }
 }

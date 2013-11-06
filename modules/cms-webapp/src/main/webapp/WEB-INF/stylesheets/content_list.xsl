@@ -1875,16 +1875,20 @@
                                 </xsl:call-template>
                               </td>
 
-                              <xsl:if test="@published = 'published'">
-                                <td align="center">
-                                  <img src="./images/icon_content_approve.gif"/>
-                                </td>
-                              </xsl:if>
+                              <xsl:if test="@published">
+                                <xsl:choose>
+                                  <xsl:when test="@published = 'published'">
+                                    <td align="center">
+                                      <img src="./images/icon_content_approve.gif"/>
+                                    </td>
+                                  </xsl:when>
 
-                              <xsl:if test="@published = 'unpublished'">
-                                <td align="center">
-                                  <img src="./images/icon_content_unapprove.gif"/>
-                                </td>
+                                  <xsl:when test="@published = 'unpublished'">
+                                    <td align="center">
+                                      <img src="./images/icon_content_unapprove.gif"/>
+                                    </td>
+                                  </xsl:when>
+                                </xsl:choose>
                               </xsl:if>
 
                             </tr>

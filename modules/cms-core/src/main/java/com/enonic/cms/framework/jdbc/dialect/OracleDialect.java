@@ -39,6 +39,7 @@ public final class OracleDialect
         setVarcharTypeValue( "varchar(?)" );
         setBlobTypeValue( "blob" );
         setTimestampTypeValue( "date" );
+        setSubstringFunctionName( "substr" );
     }
 
     public Object getObject( ResultSet result, int columnIndex )

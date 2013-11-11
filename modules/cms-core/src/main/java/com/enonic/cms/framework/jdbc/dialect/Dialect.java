@@ -66,6 +66,8 @@ public abstract class Dialect
 
     private final static String P_LENGTH_FUNCTION = "length";
 
+    private final static String P_SUBSTRING_FUNCTION = "substring";
+
     /**
      * Placeholder pattern.
      */
@@ -112,6 +114,7 @@ public abstract class Dialect
         setTimestampTypeValue( "timestamp" );
         setMinTimeStampValue( "0000-01-01 00:00:00" );
         setLengthFunctionName( "length" );
+        setSubstringFunctionName( "substring" );
     }
 
     /**
@@ -232,6 +235,14 @@ public abstract class Dialect
     public void setLengthFunctionName( String value )
     {
         setPlaceholder( P_LENGTH_FUNCTION, value );
+    }
+
+    /**
+     * Set the name fo the <code>substring</code> function placeholder.
+     */
+    public void setSubstringFunctionName( String value )
+    {
+        setPlaceholder( P_SUBSTRING_FUNCTION, value );
     }
 
     /**

@@ -40,6 +40,7 @@ public final class PostgreSqlDialect
         setVarcharTypeValue( "varchar(?)" );
         setBlobTypeValue( "bytea" );
         setTimestampTypeValue( "timestamp" );
+        setLengthFunctionName( "character_length" );
     }
 
     /**

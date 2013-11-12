@@ -4,9 +4,13 @@
  */
 package com.enonic.cms.web.urlrewrite;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 
+/**
+ * Helps to integrate internal VirtualHostFilter with urlrewritefilter.
+ */
 public class UrlRewriterHttpServletRequestWrapper
     extends HttpServletRequestWrapper
 {
@@ -36,5 +40,23 @@ public class UrlRewriterHttpServletRequestWrapper
     public String getServletPath()
     {
         return "";
+    }
+
+    /**
+     * <p>If someone calls getRequestDispatcher on some path (like urlrewritefilter does) he
+     * is probably going to forward to the path, so fullTargetPath must be updated.</p>
+     *
+     * <p>It is better to update fullTargetPath inside forward or include but current
+     * solution is enough for urlrewritefilter</p>
+     *
+     * <p>Tested with urlrewritefilter-3.0.4</p>
+     *
+     * @see org.tuckey.web.filters.urlrewrite.NormalRewrittenUrl
+     */
+    public RequestDispatcher getRequestDispatcher( final String path )
+    {
+        fullTargetPath = path;
+
+        return super.getRequestDispatcher( path );
     }
 }

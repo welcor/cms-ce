@@ -7,9 +7,9 @@ package com.enonic.cms.core.structure;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 import org.jdom.Document;
 import org.jdom.Element;
@@ -49,48 +49,44 @@ public class SectionXmlCreator
         contentXMLCreator.setIncludeCategoryData( false );
     }
 
-    public XMLDocument createSectionsDocument( UserEntity runningUser, ContentResultSet contentResultSet )
+    public XMLDocument createSectionsDocument( UserEntity runningUser, ContentResultSet contentResultSet, final int maxCount )
     {
         final Element sectionsEl = new Element( "sections" );
-        List<Section> sectionNameList = getUniqueSectionsSorted( contentResultSet );
+        final List<Section> sectionNameList = getUniqueSectionsSorted( contentResultSet );
 
         sectionsEl.setAttribute( "count", String.valueOf( sectionNameList.size() ) );
         sectionsEl.setAttribute( "contenttotalcount", String.valueOf( contentResultSet.getTotalCount() ) );
 
         int totalCount = 0;
-        for ( Section section : sectionNameList )
+
+        for ( final Section section : sectionNameList )
         {
-            Element sectionEl = new Element( "section" );
+            final List<ContentEntity> contentList = section.getContentList();
 
-            sectionEl.setAttribute( "sitekey", section.getSiteKey().toString() );
-            sectionEl.setAttribute( "sitename", section.getSiteName() );
-            sectionEl.setAttribute( "menuitemkey", section.getMenuItemKey().toString() );
-            sectionEl.setAttribute( "name", section.getMenuItemName() );
-            sectionEl.setAttribute( "path", section.getMenuItemPath() );
-
-            int count = 0;
-            for ( ContentEntity content : contentResultSet.getContents() )
+            if ( totalCount <= maxCount )
             {
-                ContentLocationSpecification contentLocationSpecification = new ContentLocationSpecification();
-                contentLocationSpecification.setIncludeInactiveLocationsInSection( true );
-                contentLocationSpecification.setSiteKey( section.getSiteKey() );
-                final ContentLocations contentLocations = content.getLocations( contentLocationSpecification );
+                final Element sectionEl = new Element( "section" );
 
-                for ( ContentLocation location : contentLocations.getAllLocations() )
+                sectionEl.setAttribute( "sitekey", section.getSiteKey().toString() );
+                sectionEl.setAttribute( "sitename", section.getSiteName() );
+                sectionEl.setAttribute( "menuitemkey", section.getMenuItemKey().toString() );
+                sectionEl.setAttribute( "name", section.getMenuItemName() );
+                sectionEl.setAttribute( "path", section.getMenuItemPath() );
+
+                for ( final ContentEntity content : contentList )
                 {
-                    if ( location.getMenuItemKey().equals( section.getMenuItemKey() ) )
-                    {
-                        Element contentEl = contentXMLCreator.createSingleContentVersionElement( runningUser, content.getMainVersion() );
-                        sectionEl.addContent( contentEl );
-                        count++;
-                        totalCount++;
-                    }
+                    final Element contentEl = contentXMLCreator.createSingleContentVersionElement( runningUser, content.getMainVersion() );
+                    sectionEl.addContent( contentEl );
                 }
-            }
-            sectionEl.setAttribute( "sectioncount", String.valueOf( count ) );
 
-            sectionsEl.addContent( sectionEl );
+                sectionEl.setAttribute( "sectioncount", String.valueOf( contentList.size() ) );
+
+                sectionsEl.addContent( sectionEl );
+            }
+
+            totalCount += contentList.size();
         }
+
         sectionsEl.setAttribute( "contentcount", String.valueOf( contentResultSet.getLength() ) );
         sectionsEl.setAttribute( "contentinsectioncount", String.valueOf( totalCount ) );
 
@@ -99,29 +95,59 @@ public class SectionXmlCreator
 
     private List<Section> getUniqueSectionsSorted( ContentResultSet contentResultSet )
     {
-        Set<Section> uniqueSectionNames = new HashSet<Section>();
-        for ( ContentEntity content : contentResultSet.getContents() )
+        final Map<Section, Section> uniqueSectionNames = new HashMap<Section, Section>();
+
+        for ( final ContentEntity content : contentResultSet.getContents() )
         {
-            ContentLocationSpecification contentLocationSpecification = new ContentLocationSpecification();
+            final ContentLocationSpecification contentLocationSpecification = new ContentLocationSpecification();
             contentLocationSpecification.setIncludeInactiveLocationsInSection( true );
 
             final ContentLocations contentLocations = content.getLocations( contentLocationSpecification );
-            for ( ContentLocation contentLocation : contentLocations.getAllLocations() )
+            final Iterable<ContentLocation> allLocations = contentLocations.getAllLocations();
+
+            for ( final ContentLocation contentLocation : allLocations )
             {
-                if ( contentLocation.isInSection() )
+                // filter items that are not the section
+                if ( !contentLocation.isInSection() )
                 {
-                    SiteEntity siteEntity = siteDao.findByKey( contentLocation.getSiteKey().toInt() );
-                    uniqueSectionNames.add(
-                        new Section( contentLocation.getSiteKey(), contentLocation.getMenuItemKey(), contentLocation.getMenuItemName(),
-                                     contentLocation.getMenuItemPathAsString(), siteEntity.getName() ) );
+                    continue;
                 }
 
+                // filter activated='false' here instead of doing this in XSL
+                if ( contentLocation.isApproved() )
+                {
+                    continue;
+                }
+
+                final Section section =
+                    new Section( contentLocation.getSiteKey(), contentLocation.getMenuItemKey(), contentLocation.getMenuItemName(),
+                                 contentLocation.getMenuItemPathAsString(), null );
+
+                final Section existingSection = uniqueSectionNames.get( section );
+
+                if ( existingSection == null )
+                {
+                    uniqueSectionNames.put( section, section );
+
+                    final SiteEntity siteEntity = siteDao.findByKey( contentLocation.getSiteKey().toInt() );
+                    section.setSiteName( siteEntity.getName() );
+
+                    section.addContent( content );
+                }
+                else
+                {
+                    // filter here instead of doing this in XSL ( descendant::contentlocation[@activated = 'false' and @menuitemkey = ../../../../@menuitemkey])
+                    if ( existingSection.getMenuItemKey().equals( contentLocation.getMenuItemKey() ) )
+                    {
+                        existingSection.addContent( content );
+                    }
+                }
             }
         }
 
-        Section[] sectionNameArray = new Section[uniqueSectionNames.size()];
-        uniqueSectionNames.toArray( sectionNameArray );
-        List<Section> sectionNameList = Arrays.asList( sectionNameArray );
+        final Section[] sectionNameArray = new Section[uniqueSectionNames.size()];
+        uniqueSectionNames.keySet().toArray( sectionNameArray );
+        final List<Section> sectionNameList = Arrays.asList( sectionNameArray );
 
         Collections.sort( sectionNameList, new CaseInsensitiveSectionComparator() );
         return sectionNameList;

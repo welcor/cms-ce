@@ -5,6 +5,10 @@
 
 package com.enonic.cms.core.structure;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.enonic.cms.core.content.ContentEntity;
 import com.enonic.cms.core.structure.menuitem.MenuItemKey;
 
 class Section
@@ -19,6 +23,8 @@ class Section
     private String menuItemPath;
 
     private String siteName;
+
+    private List<ContentEntity> contentList = new ArrayList<ContentEntity>();
 
     public Section( SiteKey siteKey, MenuItemKey menuItemKey, String menuItemName, String menuItemPathAsString, String siteName )
     {
@@ -97,4 +103,18 @@ class Section
         return siteName;
     }
 
+    public void setSiteName( final String siteName )
+    {
+        this.siteName = siteName;
+    }
+
+    public void addContent( final ContentEntity content )
+    {
+        contentList.add( content );
+    }
+
+    public List<ContentEntity> getContentList()
+    {
+        return contentList;
+    }
 }

@@ -207,7 +207,7 @@ public class MyPageServlet
 
         SectionXmlCreator sectionXmlCreator =
             new SectionXmlCreator( siteDao, new CategoryAccessResolver( groupDao ), new ContentAccessResolver( groupDao ) );
-        XMLDocument sectionDocument = sectionXmlCreator.createSectionsDocument( user, contentResultSet );
+        XMLDocument sectionDocument = sectionXmlCreator.createSectionsDocument( user, contentResultSet, count );
 
         Document waitingForActivationDoc = sectionDocument.getAsDOMDocument();
         // waitingForActivationDoc.getDocumentElement().setAttribute("type", "activation");

@@ -327,7 +327,7 @@ public class PostProcessInstructionExecutorImpl
 
         FileResource fileResource = fileResourceService.getResource( fileResourceName );
 
-        if ( fileResource != null )
+        if ( fileResource != null && !fileResource.isFolder() )
         {
             Long timeStamp = fileResource.getLastModified().getMillis();
             addTimeStampParameter( timeStamp, sitePath );

@@ -73,6 +73,7 @@
 		<html>
 			<head>
 				<link type="text/css" href="css/admin.css" rel="stylesheet" />
+        <title>%headVerticalSite% - Add access right</title>
 				<script type="text/javascript" src="javascript/admin.js">//</script>
         <script type="text/javascript" src="javascript/lib/jquery/jquery-1.7.2.min.js">//</script>
 
